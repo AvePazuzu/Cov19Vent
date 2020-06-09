@@ -6,9 +6,6 @@ Created on Wed May  6 19:23:57 2020
 @author: eugen
 """
 
-# with open("data.yaml", 'r') as f:
-#     data_loaded = yaml.safe_load(stream)
-
 # =============================================================================
 # Module to store major controll functions
 # =============================================================================
@@ -233,6 +230,8 @@ def setParam():
             break
     
     # 6. Breath frequency
+    # Calculated per minute and based on iTin & iTex [1/min]
+    bFrq = round(60 / (iTin + iTex), 2) 
     
     # 7. Complience
     # Mean value complience [l/pa]
@@ -251,8 +250,7 @@ def setParam():
             # Write to param here
             print("Complience set to:", str(iCpl) + "[l/Pa]")
             break
-                
-    
+                   
     # 8. Maximum airway pressure
     phr8 = "\nPlease enter maximum airway pressure (max 175[Pa]): "        
     while True:       
@@ -277,24 +275,21 @@ def setParam():
     param["vRst"] = vRst
     param["Tins"] = iTin
     param["Texp"] = iTex
+    param["bFrq"] = bFrq
     param["C"] = iCpl
-
-    # param["pCrt"] = pCrt // place holder for later input
-    # param["pCrt"] = pCrt
-    
     param["pCrt"] = pCrt
     
-    with open(r'./bin/param.yaml', 'w') as f:
+    with open('./bin/param.yaml', 'w') as f:
         yaml.dump(param, f)    
 
-    # derive and set amount of micro steps from volume    
+    # Derive and set amount of micro steps from volume    
     # Total hight per vent cycle: h[mm] = v/(pi*r²) with 1[ml] = 1000[mm²]
     h = int((iVAZ*1000*1000)/(math.pi * math.pow((geo['dmtP']*1000/2), 2)))
     
     # Microsteps per vent cycle: 1mm = 400[mcs]/8[mm] * h[mm]
     mcs = int(geo['stepsPT']/geo['grad'] * h/1000)
     
-    with open(r'./bin/config.yaml') as f:
+    with open('./bin/config.yaml') as f:
         config = yaml.safe_load(f)
         
     config['McS'] = mcs
