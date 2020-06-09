@@ -115,18 +115,6 @@ def start():
 # set configuration parameters
 # =============================================================================
 """ 
-# Compliance [l/Pa] range: 0 - 1.25 +/-15%
-Comp: 0
-
-# Inspiration time in [s] range: +/-20%
-Tins: 0
-
-# Cycle frequency in rounds per min [rpm] range: 0.05 - 0.15
-cFrq: 0
-
-# Pressure limit [Pa]:
-pMax: 175
-
 # Volume status [%] - reflecting changes due to pressure reduction:
 VolStat: 100
 
@@ -232,6 +220,7 @@ def setParam():
     # 6. Breath frequency
     # Calculated per minute and based on iTin & iTex [1/min]
     bFrq = round(60 / (iTin + iTex), 2) 
+    print("Breath frequency is:", str(bFrq)+ "[1/min]")
     
     # 7. Complience
     # Mean value complience [l/pa]
