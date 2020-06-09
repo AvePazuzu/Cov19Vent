@@ -1,0 +1,15 @@
+# inner diameter of pump in [m]
+dmtP: 0.100
+
+# upward gradient of spindle in [m]
+grad: 0.008
+
+# amount of microsteps per total turn
+stepsPT: 80
+
+# max spindle lenght in [m]
+spL: 0.140
+
+# mm per microstep: upward gradient / microsteps per total turn (8/400)
+wpMS: 0.02
+

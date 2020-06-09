@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "./test_control.py", line 122, in <module>
+    if i % 1 == 0:
+TypeError: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "./test_control.py", line 122, in <module>
+    if i % 1 == 0:
+TypeError: not all arguments converted during string formatting
