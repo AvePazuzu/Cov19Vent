@@ -216,10 +216,21 @@ def setParam():
             break
         
     # 5. Expiration time
-    # # Expiration time [s] = (60[s] - (freq * inT[s])) / freq
-    # Calculated
-    # cTex = (60 - param['Frq']*inT)/param['Frq']
-    # Input value
+    # Calculated in a range of 1-2 times fo inspiration time
+    cTexmin, cTexmax = iTin, iTin * 2
+    phr5 = "\nPlease enter expiration time "+"("+str(cTexmin)+"-"+str(cTexmax)+"[s])"+": "
+    while True:
+        try:
+            iTex = float(input(phr5))
+        except ValueError:
+            print("Entered value is not valid.")
+            continue 
+        if iTin < cTexmin or iTin > cTexmax:
+            print("Expiration time out of bound.")
+        else:
+            # write to param
+            print("Expiration time set to:", str(iTex)+ "[s]")
+            break
     
     # 6. Breath frequency
     
@@ -264,7 +275,8 @@ def setParam():
     param["mPAT"] = mPAT
     param["VAZ"] = iVAZ
     param["vRst"] = vRst
-    param["Tin"] = iTin
+    param["Tins"] = iTin
+    param["Texp"] = iTex
     param["C"] = iCpl
 
     # param["pCrt"] = pCrt // place holder for later input

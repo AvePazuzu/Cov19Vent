@@ -1,2 +1,13 @@
-{C: 1.25, Comp: 0, TiSF: 1.15, Tin: 5.0, Tins: 0, VAZ: 0.5, VolStat: 100, Vrest: 0,
-  cFrq: 0, mPAT: 80.0, pCrt: 150.0, pMax: 175, vRst: 0.1}
+C: 1.25
+Comp: 0
+TiSF: 1.15
+Tin: 3.0
+Tins: 0
+VAZ: 0.35
+VolStat: 100
+Vrest: 0
+cFrq: 0
+mPAT: 59.0
+pCrt: 123.0
+pMax: 175
+vRst: 0.1

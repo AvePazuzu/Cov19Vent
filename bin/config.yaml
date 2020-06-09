@@ -1,2 +1,9 @@
-{McS: 630, calibrate: true, exT: 3.0714285714285716, inT: 5.5, optSet: true, pres: 9,
-  proc: false, session: !!timestamp '2020-05-20 07:59:58.700474', status: stop}
+McS: 440
+calibrate: true
+exT: 3.0714285714285716
+inT: 5.5
+optSet: true
+pres: 9
+proc: false
+session: 2020-05-20 07:59:58.700474
+status: stop
