@@ -1,10 +1,10 @@
 C: 1.25
-Texp: 5.0
+Texp: 6.0
 TiSF: 1.15
-Tins: 4.0
-VAZ: 0.4
+Tins: 6.0
+VAZ: 0.6
 VolStat: 100
-bFrq: 6.67
-mPAT: 69.0
-pCrt: 147.0
+bFrq: 5.0
+mPAT: 90.0
+pCrt: 150.0
 vRst: 0.1

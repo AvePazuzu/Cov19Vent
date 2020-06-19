@@ -18,8 +18,8 @@ import os
 pid = os.getpid()
 
 # read params from config & prsIs
-with open(r'config.yaml') as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
+with open('./bin/config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
     
 
 # n = ventilation cycle count       
@@ -29,8 +29,8 @@ while config['status'] == "running":
     n += 1  
     # print(n)
 
-    with open(r'config.yaml') as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)
+    with open('./bin/config.yaml', 'r') as f:
+        config = yaml.safe_load(f)
     
     if config['McS'] == 100:
         # print("Exeting after n = ", n)
