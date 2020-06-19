@@ -5,7 +5,7 @@ dmtP: 0.100
 grad: 0.008
 
 # amount of microsteps per total turn
-stepsPT: 80
+stepsPT: 200
 
 # max spindle lenght in [m]
 spL: 0.140

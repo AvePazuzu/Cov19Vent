@@ -32,9 +32,9 @@ while config['status'] == "running":
     with open('./bin/config.yaml', 'r') as f:
         config = yaml.safe_load(f)
     
-    if config['McS'] == 100:
+    # if config['McS'] == 100:
         # print("Exeting after n = ", n)
-        break
+        # break
         
     # ms = micro steps counter
     ms = 0    
@@ -43,8 +43,8 @@ while config['status'] == "running":
         ms += 1    
         if ms % 100 == 0:
             # print("Ms: ", ms)
-            with open(r'prsIs.yaml') as f:
-                prsIs = yaml.load(f, Loader=yaml.FullLoader)
+            with open('prsIs.yaml', 'r') as f:
+                prsIs = yaml.safe_load(f)
             
             if prsIs['prsIs'] >= config['pres']:
                 # print("Yes")
