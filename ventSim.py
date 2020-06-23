@@ -27,9 +27,9 @@ with open('./bin/param.yaml', 'r') as f:
     param = yaml.safe_load(f)
 
 vAZ = param["VAZ"]    
-kPC = 1
 tIns = param["Tins"]
 tStp = config["McS"]
+kPC = 1
 
 # Calculated new inspiration time with respect of kPC
 dt = round(tIns + tIns*(pow(kPC, -1) -1), 4)
