@@ -7,7 +7,7 @@ Created on Mon May 18 15:18:06 2020
 """
 
 # =============================================================================
-# Module for simulation of machine
+# Module for simulation of GPIO controlled RasPi
 # =============================================================================
 
 import yaml
@@ -21,6 +21,14 @@ pid = os.getpid()
 with open('./bin/config.yaml', 'r') as f:
     config = yaml.safe_load(f)
     
+# Set input parameters
+with open('./bin/config.yaml', 'r') as f:
+    param = yaml.safe_load(f)
+
+vAZ = param["VAZ"]    
+kPC = 1 # Correction factors not included yet
+tIns = param["Tins"]
+tStp = config["McS"]
 
 # n = ventilation cycle count       
 n = 0        
