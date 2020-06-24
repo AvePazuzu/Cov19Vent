@@ -10,6 +10,6 @@ stepsPT: 200
 # max spindle lenght in [m]
 spL: 0.140
 
-# mm per microstep: upward gradient / microsteps per total turn (8/400)
-wpMS: 0.02
+# mm per microstep: upward gradient / microsteps per total turn (8/200)
+wpMS: 0.04
 

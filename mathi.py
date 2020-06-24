@@ -14,9 +14,9 @@ import numpy as np
 # Step by step implimentation of flow
 # =============================================================================
 vAZ = .500 # [l] 1l = 1000000 mm³
+vAZ = 0.005 # [m³] 1l = 1000000 mm³
 
-kPC = 0.9
-
+kPC = 1
 tIns = 5
 
 tStp = 1000
@@ -101,17 +101,52 @@ plt.show()
 # =============================================================================
 # Implementation of Speed [mm/s]
 # =============================================================================
-t = 3
-dia = 10 # Diameter of pump = 10cm
-z = 8 # Step of spindle: 8mm
-fi = 9
+t = 4
+dia = .10 # Diameter of pump = 10cm
+z = .008 # Step of spindle: 8mm
+fi = 1.8
 d = round(t + t*(math.pow(kPC, -1) -1), 2)
 k = np.arange(0, d+(d/tStp), d/tStp)    
-m = []
+nm = []
 for i in k:
     # print(i)
     # q = (dt/tStp)*i
     # print(q)
-    nM = ((48*vAZ)/((math.pow(dia,2)*fi*z)))*kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i)) 
-    m.append(nM)
+    nM = ((48*vAZ)/((math.pow(dia,2)*fi*z)))*kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i))*z
+    nm.append(nM)
+ll=0
+for i in range(1,len(nm[:-1])):
+    j =  0.08/nm[i]
+    ll+=j
 
+plt.plot(k, nm, "r")
+
+# test of speed
+gg=[]
+for i in nm[1:-1]:
+    n = .002/1000/i
+    gg.append(n)
+sum(gg) 
+plt.plot(k[1:-1], gg, "r")
+   
+
+ii = [1,2,4,8]
+hh = []
+for i in ii: 
+    n = 1/i
+    hh.append(n)
+sum(hh)    
+0.04/1000/nm[2500]    
+gg[3]
+
+
+k=[]
+for i in range(1,11):
+    j = 2*i*(5/10)
+    print(j)
+    k.append(j)
+
+l=0
+for i in k:
+    l+=1/i
+3/4+.5+2
