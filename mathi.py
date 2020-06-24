@@ -9,7 +9,11 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-vAZ = 0.5
+
+# =============================================================================
+# Step by step implimentation of flow
+# =============================================================================
+vAZ = .500 # [l] 1l = 1000000 mm³
 
 kPC = 0.9
 
@@ -30,7 +34,6 @@ for i in range(1, tStp+1):
     y.append(vflr)
 
 t = 3
-
 d = round(t + t*(math.pow(kPC, -1) -1), 2)
 k = np.arange(0, d+(d/tStp), d/tStp)    
 m = []
@@ -46,9 +49,9 @@ for i in k:
 # m1, k1 = func(1)
 # m2, k2 = func(.8)
 
-# plt.plot(k1, m1, "b")
-# plt.plot(k2, m2, "r")
-# plt.show()
+plt.plot(k, m, "b")
+plt.plot(k, y2, "r")
+plt.show()
 
     
 # cummulated sum
@@ -95,4 +98,20 @@ plt.plot(x, y2, "b")
 plt.plot(x, y2, "b")
 plt.show()
 
+# =============================================================================
+# Implementation of Speed [mm/s]
+# =============================================================================
+t = 3
+dia = 10 # Diameter of pump = 10cm
+z = 8 # Step of spindle: 8mm
+fi = 9
+d = round(t + t*(math.pow(kPC, -1) -1), 2)
+k = np.arange(0, d+(d/tStp), d/tStp)    
+m = []
+for i in k:
+    # print(i)
+    # q = (dt/tStp)*i
+    # print(q)
+    nM = ((48*vAZ)/((math.pow(dia,2)*fi*z)))*kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i)) 
+    m.append(nM)
 
