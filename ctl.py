@@ -272,10 +272,10 @@ def setParam():
         yaml.dump(param, f)    
 
     # Derive and set amount of micro steps from volume    
-    # Total hight per vent cycle: h[mm] = v/(pi*r²) with 1[ml] = 1000[mm²]
+    # Total hight per vent cycle: h[m] = v[m³]/(pi*r[m]²) with 1[ml] = 1000[mm²]
     h = int((iVAZ*1000*1000)/(math.pi * math.pow((geo['dmtP']*1000/2), 2)))
     
-    # Microsteps per vent cycle: 1mm = 400[mcs]/8[mm] * h[mm]
+    # Microsteps per vent cycle: 1mm = 200[mcs]/8[mm] * h[mm]
     mcs = int(geo['stepsPT']/geo['grad'] * h/1000)
     
     with open('./bin/config.yaml') as f:

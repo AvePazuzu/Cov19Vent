@@ -1,10 +1,2 @@
-C: 1.25
-Texp: 6.0
-TiSF: 1.15
-Tins: 5.0
-VAZ: 0.6
-VolStat: 100
-bFrq: 5.0
-mPAT: 90.0
-pCrt: 150.0
-vRst: 0.1
+{C: 1.25, Texp: 5.0, TiSF: 1.15, Tins: 5.0, VAZ: 0.5, VolStat: 100, bFrq: 6.0, mPAT: 80.0,
+  pCrt: 175.0, vRst: 0.1}

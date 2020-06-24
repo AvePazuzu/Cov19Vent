@@ -14,24 +14,18 @@ import numpy as np
 # Step by step implimentation of flow
 # =============================================================================
 vAZ = .500 # [l] 1l = 1000000 mm³
-vAZ = 0.005 # [m³] 1l = 1000000 mm³
+vAZ = 0.0005 # [m³] 1l = 1000000 mm³
 
 kPC = 1
 tIns = 5
 
-tStp = 1000
+
+tStp = 1950
 
 # Calculated new inspiration time with respect of kPC
 dt = round(tIns + tIns*(math.pow(kPC, -1) -1), 4)
 
 # isperation flow    
-y = []
-for i in range(1, tStp+1):
-    # print(i)
-    q = (dt/tStp)*i
-    # print(q)
-    vflr = 6*vAZ*((-1/kPC*(math.pow(dt, (-3)))*math.pow(q,2)) + ((1/kPC*(math.pow(dt, -2)))*q)) 
-    y.append(vflr)
 
 t = 3
 d = round(t + t*(math.pow(kPC, -1) -1), 2)
@@ -101,22 +95,34 @@ plt.show()
 # =============================================================================
 # Implementation of Speed [mm/s]
 # =============================================================================
-t = 4
-dia = .10 # Diameter of pump = 10cm
+t = 5
+dia = .1 # Diameter of pump = 10cm
 z = .008 # Step of spindle: 8mm
 fi = 1.8
-d = round(t + t*(math.pow(kPC, -1) -1), 2)
-k = np.arange(0, d+(d/tStp), d/tStp)    
+d = t + t*(math.pow(kPC, -1) -1)
+
+vAZ = 0.0005 # [m³] 1l = 1000000 mm³
+# Total hight per vent cycle: h[m] = v[m³]/(pi*r[m]²) with 1[ml] = 1000[mm²]
+hVc = vAZ/(math.pi*math.pow(dia/2, 2)) *1000
+
+mst = int(200/8 * hVc)
+k = np.arange(0, d+(d/mst), d/mst)    
+
 nm = []
+ft0 = []
+ft1 = []
 for i in k:
-    # print(i)
-    # q = (dt/tStp)*i
-    # print(q)
-    nM = ((48*vAZ)/((math.pow(dia,2)*fi*z)))*kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i))*z
+    t0 = (48*vAZ)/((dia*dia)*fi*z)
+    ft0.append(t0)
+    t1 = kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i))
+    ft1.append(t1)
+    nM = t0*t1*z
     nm.append(nM)
+
+sum(nm)/1592    
 ll=0
 for i in range(1,len(nm[:-1])):
-    j =  0.08/nm[i]
+    j =  .04/1000/nm[i]
     ll+=j
 
 plt.plot(k, nm, "r")
@@ -124,7 +130,7 @@ plt.plot(k, nm, "r")
 # test of speed
 gg=[]
 for i in nm[1:-1]:
-    n = .002/1000/i
+    n = 0.04/1000/i
     gg.append(n)
 sum(gg) 
 plt.plot(k[1:-1], gg, "r")
