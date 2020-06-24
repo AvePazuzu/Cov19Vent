@@ -39,7 +39,6 @@ for i in k:
     m.append(vflr)
 
 
-
 # m1, k1 = func(1)
 # m2, k2 = func(.8)
 
