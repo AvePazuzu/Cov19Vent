@@ -13,7 +13,6 @@ print("\nProgram started...")
 
 cc = ("\nControl commands:\n"
       "--> 'set' to set the parameters\n"
-      "--> 'cal' to calibrate the divice\n"
       "--> 'start' to start the divice\n"
       "--> 'stop' to stop the divice\n"
       "--> 'stats' to view config\n"
@@ -40,9 +39,6 @@ while True:
         
     elif input1 == 'stop':
         ctl.stop()
-        
-    elif input1 == 'cal':
-        ctl.calibrate()
         
     elif input1 == 'set':
         ctl.setParam()
