@@ -7,23 +7,33 @@ Created on Thu May 28 10:17:22 2020
 """
 
 import yaml
-
 from time import sleep
-    
-with open(r'./bin/manSP.yaml') as file:
-    manSP = yaml.load(file, Loader=yaml.FullLoader)    
-    
-# max lenght 
-maxL = int(manSP["spL"] / manSP["grad"] * manSP["stepsPT"])
+  
+# =============================================================================
+# Calibration is performed after parameter setting and performs 110% upward 
+# and one total turn downward movement
+# =============================================================================
 
-# amount fo steps down for 5mm 
-dw = int(5/manSP["wpMS"])
-dw
+# Loding of manufacturing parameters  
+with open('./bin/manSP.yaml', 'r') as f:
+    manSP = yaml.safe_load(f)    
 
-# go up
-for i in list(range(maxL)):
-    sleep(0.002)
-   
-# go down   
-for j in list(range(dw)):
+# load steps per total turn for downward movement
+stepsPT = manSP["stepsPT"]
+
+# Loding of configuration parameters  
+with open('./bin/config.yaml', 'r') as f:
+    config = yaml.safe_load(f)    
+
+# Calculation of microsteps for upward movement
+msCal = int(config["McS"] * 1.10)
+
+# Upward movement
+print("moving up")
+for i in range(msCal):
+    sleep(0.003)
+
+# Downward movement
+print("moving down")    
+for i in range(stepsPT):
     sleep(0.003)
