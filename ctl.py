@@ -15,39 +15,18 @@ import subprocess
 import datetime as dt
 import os
 import math
-
-# =============================================================================
-# Device callibration
-# =============================================================================
-
-def calibrate():
-    
-    print('\nCalibrating divice...\n')
-    
-    with open('./bin/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    
-    if config['status'] != 'stop':
-        print('Cannot calibrate running cycle')
-        
-    else:        
-        subprocess.run("./dtp/calSim.py")
-        
-        config['calibrate'] = True
-        
-        with open('./bin/config.yaml', 'w') as f:
-            yaml.dump(config, f)
-        print('Calibration sucessful.')
+from time import sleep
+import RPi.GPIO as GPIO
                
 # =============================================================================
 # Retrieve parameter set points        
 # =============================================================================
 
 def getStats():
-   
+    
     with open('./bin/config.yaml') as f:
-        config = yaml.safa_load(f)        
-        print("Config:")
+        config = yaml.safe_load(f)        
+        print("\nConfig:")
         
         for key in config:
             print(key,": ",config[key])
@@ -272,10 +251,10 @@ def setParam():
         yaml.dump(param, f)    
 
     # Derive and set amount of micro steps from volume    
-    # Total hight per vent cycle: h[m] = v[m³]/(pi*r[m]²) with 1[ml] = 1000[mm²]
+    # Total hight per vent cycle: h[mm] = v[mm³]/(pi*r[mm²]) with 1[ml] = 1000[mm²]
     h = int((iVAZ*1000*1000)/(math.pi * math.pow((geo['dmtP']*1000/2), 2)))
     
-    # Microsteps per vent cycle: 1mm = 200[mcs]/8[mm] * h[mm]
+    # Microsteps per vent cycle: 1mm = 200[mcs]/0.008[m] * h[mm]/1000
     mcs = int(geo['stepsPT']/geo['grad'] * h/1000)
     
     with open('./bin/config.yaml') as f:
@@ -286,11 +265,83 @@ def setParam():
  
     with open('./bin/config.yaml', 'w') as f:
         yaml.dump(config, f)   
-
-
+        
     print("\nOptions set.\n")    
 
     # Device calibration
-    # calibrate()
+    # calibrate() 
 
-    # print("\nDevice calibrated. Returning....\n")    
+# =============================================================================
+# Calibration is performed after parameter setting and performs 110% of upward 
+# and two total turns of downward movement
+# =============================================================================
+
+def calibrate():
+    
+    print('\nCalibrating divice...\n')
+    
+    # GPIO setup
+    GPIO.setmode(GPIO.BOARD)
+    
+    # Raspberry Pi pin set for TB6600 driver
+    ENA = 37
+    DIR = 35
+    PUL = 33
+    
+    # set upward movement 
+    #up = GPIO.HIGH
+    # set down ward movemnt 
+    #down = GPIO.LOW
+    
+    ENA_Locked = GPIO.LOW
+    # ENA_Released = GPIO.HIGH
+    
+    GPIO.setwarnings(False)
+    GPIO.setup(DIR, GPIO.OUT)
+    GPIO.setup(PUL, GPIO.OUT)
+    GPIO.setup(ENA, GPIO.OUT)
+    
+    # activate and hold motor
+    GPIO.output(ENA, ENA_Locked)
+            
+    # set upward movement
+    GPIO.output(DIR, GPIO.HIGH)
+    
+    # load and calculate microsteps for upward movement
+    with open('./bin/config.yaml', 'r') as f:
+        config = yaml.safe_load(f)
+    
+    mcsCal = int(config["McS"] * 1.10)    
+    for i in range(mcsCal):
+
+        # Puls modeling
+        GPIO.output(PUL, GPIO.HIGH)
+        sleep(0.001)
+
+        GPIO.output(PUL, GPIO.LOW)
+        sleep(0.001)
+    
+    # set downward movement
+    GPIO.output(DIR, GPIO.LOW)
+    
+    # load and calculate microsteps steps of two total turns: ttTu
+    with open('./bin/manSP.yaml', 'r') as f:
+        manSP = yaml.safe_load(f)
+    
+    ttTu = manSP["stepsPT"] * 2
+    for i in range(ttTu):
+        
+        # Puls modeling
+        GPIO.output(PUL, GPIO.HIGH)
+        sleep(0.001)
+
+        GPIO.output(PUL, GPIO.LOW)
+        sleep(0.001)
+        
+    # clear GPIO signals
+    GPIO.cleanup()
+    		
+    # Release motor
+    # GPIO.output(ENA, ENA_Released)
+    
+    return print("\nCalibration sucessful. Returning to Control Center...\n")
