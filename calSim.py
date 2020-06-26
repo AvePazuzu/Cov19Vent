@@ -13,7 +13,7 @@ from time import sleep
 # Calibration is performed after parameter setting and performs 110% upward 
 # and one total turn downward movement
 # =============================================================================
-
+print("Calibration started...")
 # Loding of manufacturing parameters  
 with open('./bin/manSP.yaml', 'r') as f:
     manSP = yaml.safe_load(f)    
@@ -37,3 +37,5 @@ for i in range(msCal):
 print("moving down")    
 for i in range(stepsPT):
     sleep(0.003)
+    
+print("\nCalibration finished. Returning to Control Center...\n")    
