@@ -48,7 +48,7 @@ while True:
     print("\nPressure actual: ", ps)
     print("\nPressure setpoint: ", psT)
     print("\nPressure status: Okay")
-   
+    
     time.sleep(0.5)
     
     clear()

@@ -49,7 +49,7 @@ def stop():
     with open('./bin/config.yaml', "r") as f:
         config = yaml.safe_load(f)
     
-    config['status'] = 'stop'
+    config['start'] = False
     config['calibrate'] = False
     
     with open('./bin/config.yaml', 'w') as f:
@@ -63,17 +63,17 @@ def start():
     with open('./bin/config.yaml', "r") as f:
         config = yaml.safe_load(f)
 
-    if config['status'] == 'running':
-        print("Divice already running.\n"
-              "To restart enter 'stop' and recalibrate the device.")
+    # if config['status'] == 'running':
+    #     print("Divice already running.\n"
+    #           "To restart enter 'stop' and recalibrate the device.")
         
-    elif config['optSet'] != True:
+    if config['optSet'] != True:
         print("Please set parameters before starting.")
        
     else:
         # declare variable for subprocesss
-        config['status'] = 'running'
-        start["start"] = True
+        # config['status'] = 'running'
+        config["start"] = True
         config['session'] = dt.datetime.now()
         # config['optSet'] = False
         with open('config.yaml', 'w') as f:
@@ -82,14 +82,15 @@ def start():
         
         subprocess.run(['gnome-terminal', '--', './mon.py'])
         
-        with open(r'proc.yaml') as f:
-            proc = yaml.safe_load(f)
-        proc['proc'] = 'yes'
+        # with open(r'proc.yaml') as f:
+        #     proc = yaml.safe_load(f)
         
-        with open('proc.yaml', 'w') as f:
-            yaml.dump(proc, f) 
+        # proc['proc'] = 'yes'
         
-        os.system('nohup ./sim.py &')  
+        # with open('proc.yaml', 'w') as f:
+        #     yaml.dump(proc, f) 
+        
+        os.system('nohup ./ventSim0.py &')  
                
 # =============================================================================
 # set configuration parameters
