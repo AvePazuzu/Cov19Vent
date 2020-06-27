@@ -15,8 +15,8 @@ import subprocess
 import datetime as dt
 import os
 import math
-from time import sleep
-import RPi.GPIO as GPIO
+# from time import sleep
+# import RPi.GPIO as GPIO
                
 # =============================================================================
 # Retrieve parameter set points        
@@ -46,7 +46,7 @@ def stop():
     
     print('Stopping ventilation...')
     
-    with open(r'./bin/config.yaml') as f:
+    with open('./bin/config.yaml', "r") as f:
         config = yaml.safe_load(f)
     
     config['status'] = 'stop'
@@ -60,7 +60,7 @@ def stop():
 # =============================================================================
 
 def start():
-    with open('config.yaml') as f:
+    with open('./bin/config.yaml', "r") as f:
         config = yaml.safe_load(f)
 
     if config['status'] == 'running':
@@ -73,6 +73,7 @@ def start():
     else:
         # declare variable for subprocesss
         config['status'] = 'running'
+        start["start"] = True
         config['session'] = dt.datetime.now()
         # config['optSet'] = False
         with open('config.yaml', 'w') as f:
@@ -104,7 +105,7 @@ TiSF: 1.15
 def setParam():      
 
     # 0. Maximum air volume mVAZ based on pump geometry: pi*r²*hmax
-    with open('./bin/manSP.yaml') as f:
+    with open('./bin/manSP.yaml', "r") as f:
         geo = yaml.safe_load(f)
     
     mVAZ = round(math.pi*(geo["dmtP"]/2)**2*geo["spL"]*1000, 2)
@@ -234,8 +235,12 @@ def setParam():
             print("Maximum airway pressure set to:", str(pCrt) + "[Pa]")
             break
     
+    # 9. Modification time stamp
+    tmps = dt.datetime.now()
+    print("\nModification time stamp: " + str(tmps))
+    
     # Load binary and set parameters        
-    with open('./bin/param.yaml') as f:
+    with open('./bin/param.yaml', "r") as f:
         param = yaml.safe_load(f)
        
     param["mPAT"] = mPAT
@@ -246,6 +251,7 @@ def setParam():
     param["bFrq"] = bFrq
     param["C"] = iCpl
     param["pCrt"] = pCrt
+    param["tmps"] = tmps
     
     with open('./bin/param.yaml', 'w') as f:
         yaml.dump(param, f)    
@@ -259,7 +265,13 @@ def setParam():
     
     with open('./bin/config.yaml') as f:
         config = yaml.safe_load(f)
-        
+           
+    config['Tins'] = iTin
+    config['Texp'] = iTex
+    config['bFrq'] = bFrq
+    config['c'] = iCpl
+    config['c'] = iCpl
+    config['pCrt'] = pCrt
     config['McS'] = mcs
     config['optSet'] = True
  
@@ -276,72 +288,72 @@ def setParam():
 # and two total turns of downward movement
 # =============================================================================
 
-def calibrate():
+# def calibrate():
     
-    print('\nCalibrating divice...\n')
+#     print('\nCalibrating divice...\n')
     
-    # GPIO setup
-    GPIO.setmode(GPIO.BOARD)
+#     # GPIO setup
+#     GPIO.setmode(GPIO.BOARD)
     
-    # Raspberry Pi pin set for TB6600 driver
-    ENA = 37
-    DIR = 35
-    PUL = 33
+#     # Raspberry Pi pin set for TB6600 driver
+#     ENA = 37
+#     DIR = 35
+#     PUL = 33
     
-    # set upward movement 
-    #up = GPIO.HIGH
-    # set down ward movemnt 
-    #down = GPIO.LOW
+#     # set upward movement 
+#     #up = GPIO.HIGH
+#     # set down ward movemnt 
+#     #down = GPIO.LOW
     
-    ENA_Locked = GPIO.LOW
-    # ENA_Released = GPIO.HIGH
+#     ENA_Locked = GPIO.LOW
+#     # ENA_Released = GPIO.HIGH
     
-    GPIO.setwarnings(False)
-    GPIO.setup(DIR, GPIO.OUT)
-    GPIO.setup(PUL, GPIO.OUT)
-    GPIO.setup(ENA, GPIO.OUT)
+#     GPIO.setwarnings(False)
+#     GPIO.setup(DIR, GPIO.OUT)
+#     GPIO.setup(PUL, GPIO.OUT)
+#     GPIO.setup(ENA, GPIO.OUT)
     
-    # activate and hold motor
-    GPIO.output(ENA, ENA_Locked)
+#     # activate and hold motor
+#     GPIO.output(ENA, ENA_Locked)
             
-    # set upward movement
-    GPIO.output(DIR, GPIO.HIGH)
+#     # set upward movement
+#     GPIO.output(DIR, GPIO.HIGH)
     
-    # load and calculate microsteps for upward movement
-    with open('./bin/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
+#     # load and calculate microsteps for upward movement
+#     with open('./bin/config.yaml', 'r') as f:
+#         config = yaml.safe_load(f)
     
-    mcsCal = int(config["McS"] * 1.10)    
-    for i in range(mcsCal):
+#     mcsCal = int(config["McS"] * 1.10)    
+#     for i in range(mcsCal):
 
-        # Puls modeling
-        GPIO.output(PUL, GPIO.HIGH)
-        sleep(0.001)
+#         # Puls modeling
+#         GPIO.output(PUL, GPIO.HIGH)
+#         sleep(0.001)
 
-        GPIO.output(PUL, GPIO.LOW)
-        sleep(0.001)
+#         GPIO.output(PUL, GPIO.LOW)
+#         sleep(0.001)
     
-    # set downward movement
-    GPIO.output(DIR, GPIO.LOW)
+#     # set downward movement
+#     GPIO.output(DIR, GPIO.LOW)
     
-    # load and calculate microsteps steps of two total turns: ttTu
-    with open('./bin/manSP.yaml', 'r') as f:
-        manSP = yaml.safe_load(f)
+#     # load and calculate microsteps steps of two total turns: ttTu
+#     with open('./bin/manSP.yaml', 'r') as f:
+#         manSP = yaml.safe_load(f)
     
-    ttTu = manSP["stepsPT"] * 2
-    for i in range(ttTu):
+#     ttTu = manSP["stepsPT"] * 2
+#     for i in range(ttTu):
         
-        # Puls modeling
-        GPIO.output(PUL, GPIO.HIGH)
-        sleep(0.001)
+#         # Puls modeling
+#         GPIO.output(PUL, GPIO.HIGH)
+#         sleep(0.001)
 
-        GPIO.output(PUL, GPIO.LOW)
-        sleep(0.001)
+#         GPIO.output(PUL, GPIO.LOW)
+#         sleep(0.001)
         
-    # clear GPIO signals
-    GPIO.cleanup()
+#     # clear GPIO signals
+#     GPIO.cleanup()
     		
-    # Release motor
-    # GPIO.output(ENA, ENA_Released)
+#     # Release motor
+#     # GPIO.output(ENA, ENA_Released)
     
-    return print("\nCalibration sucessful. Returning to Control Center...\n")
+#     return print("\nCalibration sucessful. Returning to Control Center...\n")

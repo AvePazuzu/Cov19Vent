@@ -18,8 +18,8 @@ while True:
     print("Welcome to the Cov-19 artificial vent experience!\n")
     print("Session Monitor:\n")
     
-    with open(r'./bin/config.yaml') as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)
+    with open('./bin/config.yaml', "r") as f:
+        config = yaml.safe_load(f)
         
     with open(r'./bin/proc.yaml') as file:
         proc = yaml.load(file, Loader=yaml.FullLoader)
@@ -40,7 +40,7 @@ while True:
     cy = proc['vent_cycle']
     st = proc['proc']
     ps = pre['prsIs']
-    psT = param['Pre']
+    psT = config['pCrt']
          
     print("Session: ", se)
     print("\nProcess active: ", pids)
