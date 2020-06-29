@@ -23,19 +23,29 @@ proc["pid"] = pid
 
 with open('./bin/proc.yaml', 'w') as f:
     yaml.dump(proc, f) 
+  
 
 # load config and params
 with open('./bin/config.yaml', 'r') as f:
     config = yaml.safe_load(f)
    
-tIns = config["Tins"]
-tExp = config["Texp"]
+tIns = config["Tins"]-0.14
+tExp = config["Texp"]-0.14
 tStp = config["McS"]
+
+# pause to determine movement speed
+slpIn = tIns/tStp
+slpEx = tExp/tStp
 
 # Vent cycle count
 n = 0
 while config["start"] == True:
     
+    # load config to check for status updates
+    with open('./bin/config.yaml', 'r') as f:
+        config = yaml.safe_load(f)
+    
+    # start inspiration
     n+=1
     print("Breath Cycle: ", n)   
     # Elapsed time during last cycle
@@ -43,18 +53,31 @@ while config["start"] == True:
     print("Inspiration...")
     
     for i in range(tStp):
-        time.sleep(tIns/tStp)
-    
+        time.sleep(slpIn)
+        
     tI1 = time.time()
     dtI = tI1-tI0
     print("Ins Time of last cycle: ", dtI)
     
+    # write actual expiration time to proc.yaml
+    with open('./bin/proc.yaml', "r") as f:
+        proc = yaml.safe_load(f)
+
+    proc['vent_cycle'] = n
+    proc['exp_time'] = round(dtI, 4)
+
+    with open('./bin/proc.yaml', 'w') as f:
+        yaml.dump(proc, f)
+    
+    
+    # start expiration
     print("Expiration...")
     tE0 = time.time()
     for i in range(tStp):
-        time.sleep(tExp/tStp)
+        time.sleep(slpEx)
         
     tE1 = time.time()    
     dtE = tE1-tE0
 
     print("Ext Time of last cycle: ", dtE)
+        

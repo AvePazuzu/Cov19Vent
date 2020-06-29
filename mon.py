@@ -9,8 +9,18 @@ Created on Fri May  8 13:59:29 2020
 import yaml
 import time
 import os
-import psutil
 
+# function to check prcess existance by pid
+def check_pid(pid):        
+    """ Check For the existence of a unix pid. """
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    else:
+        return True
+
+# function ot clear the terminal
 clear = lambda: os.system('clear')
 
 while True:
@@ -21,31 +31,33 @@ while True:
     with open('./bin/config.yaml', "r") as f:
         config = yaml.safe_load(f)
         
-    with open(r'./bin/proc.yaml') as file:
-        proc = yaml.load(file, Loader=yaml.FullLoader)
+    with open('./bin/proc.yaml', "r") as f:
+        proc = yaml.safe_load(f)
 
-    with open(r'./bin/prsIs.yaml') as file:
-        pre = yaml.load(file, Loader=yaml.FullLoader)        
+    # with open(r'./bin/prsIs.yaml') as file:
+    #     pre = yaml.load(file, Loader=yaml.FullLoader)        
 
-    with open(r'./bin/param.yaml') as file:
-        param = yaml.load(file, Loader=yaml.FullLoader)   
+    with open('./bin/param.yaml', "r") as f:
+        param = yaml.safe_load(f)
          
     # retriev process id and check if process is still alive
     pid = proc['pid']    
     # returns bool
-    pids = psutil.pid_exists(pid)   
+    pids = check_pid(pid)
         
-    cs = config['status']
+    #cs = config['status']
     se = config['session']   
     cy = proc['vent_cycle']
+    ti = proc['exp_time']
     st = proc['proc']
-    ps = pre['prsIs']
+    # ps = pre['prsIs']
     psT = config['pCrt']
          
     print("Session: ", se)
     print("\nProcess active: ", pids)
     print("\nCycle: ", cy)
-    print("\nPressure actual: ", ps)
+    print("\nTime of last inspiration: ", ti)
+    # print("\nPressure actual: ", ps)
     print("\nPressure setpoint: ", psT)
     print("\nPressure status: Okay")
     

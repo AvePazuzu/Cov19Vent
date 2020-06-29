@@ -50,7 +50,7 @@ def stop():
         config = yaml.safe_load(f)
     
     config['start'] = False
-    config['calibrate'] = False
+    config['optSet'] = False
     
     with open('./bin/config.yaml', 'w') as f:
         yaml.dump(config, f)
@@ -76,7 +76,7 @@ def start():
         config["start"] = True
         config['session'] = dt.datetime.now()
         # config['optSet'] = False
-        with open('config.yaml', 'w') as f:
+        with open('./bin/config.yaml', 'w') as f:
             yaml.dump(config, f)
         print("Starting ventilation...")
         

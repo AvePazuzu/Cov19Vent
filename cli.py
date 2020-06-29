@@ -21,8 +21,8 @@ cc = ("\nControl commands:\n"
 print(cc)
 
 while True:
-    print("Command & Control Center")
-    input1 = input("Enter Key: ")
+    print("\nCommand & Control Center")
+    input1 = input("Enter Key: \n")
     
     if input1 == 'e':
         print("\nTerminating program...")
