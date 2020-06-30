@@ -29,18 +29,23 @@ with open('./bin/proc.yaml', 'w') as f:
 with open('./bin/config.yaml', 'r') as f:
     config = yaml.safe_load(f)
    
-tIns = config["Tins"]-0.14
-tExp = config["Texp"]-0.14
+tIns = config["Tins"]
+tExp = config["Texp"]
 tStp = config["McS"]
 
 # correction factor 
-kPC = 1
+kPC = .7
 
 # based on correction factor inspiration time is determined by
 dtIns = round(tIns + tIns*(pow(kPC, -1) -1), 4)
 
+# the correction of inspiration time shell not be greater than 1.15
+if dtIns > tIns*1.15:
+    dtIns = tIns * 1.15
+    
+
 # pause to determine movement speed
-slpIn = tIns/tStp
+slpIn = dtIns/tStp
 slpEx = tExp/tStp
 
 # Vent cycle count
