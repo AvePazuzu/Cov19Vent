@@ -12,7 +12,7 @@ Created on Sat Jun 27 11:13:39 2020
 import yaml
 import time
 import os
-# from math import pow
+from math import pow
 
 # retrieve and save id of process to proc
 pid = os.getpid()
@@ -33,6 +33,12 @@ tIns = config["Tins"]-0.14
 tExp = config["Texp"]-0.14
 tStp = config["McS"]
 
+# correction factor 
+kPC = 1
+
+# based on correction factor inspiration time is determined by
+dtIns = round(tIns + tIns*(pow(kPC, -1) -1), 4)
+
 # pause to determine movement speed
 slpIn = tIns/tStp
 slpEx = tExp/tStp
@@ -52,11 +58,15 @@ while config["start"] == True:
     tI0 = time.time()
     print("Inspiration...")
     
+    # micro step count
+    ms = 0
     for i in range(tStp):
+        ms += 1
         time.sleep(slpIn)
         
     tI1 = time.time()
     dtI = tI1-tI0
+    print("Microsteps: ", ms)
     print("Ins Time of last cycle: ", dtI)
     
     # write actual expiration time to proc.yaml

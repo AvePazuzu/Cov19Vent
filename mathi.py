@@ -155,3 +155,27 @@ l=0
 for i in k:
     l+=1/i
 3/4+.5+2
+
+# =============================================================================
+# tri func
+# =============================================================================
+vAZ = .7
+dt = 5
+nr = np.arange(0, dt+.1, .1)    
+
+nk = []
+for i in nr:
+    y = math.pow(vAZ,3)/1.5*(dt/2-abs(dt/2-i))
+    nk.append(y)
+
+sum(nk)
+plt.plot(nr, nk, "b")
+
+
+sm = []
+d=0
+for i in nk:
+    d = d+ i
+    sm.append(d)
+
+plt.plot(nr, sm, "r")
