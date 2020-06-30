@@ -13,6 +13,7 @@ import yaml
 import time
 import os
 from math import pow
+import RPi.GPIO as GPIO
 
       
 # retrieve and save id of process to proc
@@ -76,6 +77,34 @@ for i in range(tStp):
 # speed for expiration
 slpEx = tExp/tStp
 
+# =============================================================================
+# Set up GPIO
+# =============================================================================
+
+# GPIO setup
+GPIO.setmode(GPIO.BOARD)
+
+# Raspberry Pi pin set for TB6600 driver
+ENA = 37
+DIR = 35
+PUL = 33
+
+# set upward movement 
+#up = GPIO.HIGH
+# set down ward movemnt 
+#down = GPIO.LOW
+
+ENA_Locked = GPIO.LOW
+# ENA_Released = GPIO.HIGH
+
+GPIO.setwarnings(False)
+GPIO.setup(DIR, GPIO.OUT)
+GPIO.setup(PUL, GPIO.OUT)
+GPIO.setup(ENA, GPIO.OUT)
+
+# activate and hold motor
+GPIO.output(ENA, ENA_Locked)
+
 # Vent cycle count
 n = 0
 while config["start"] == True:
@@ -83,6 +112,9 @@ while config["start"] == True:
     # load config to check for status updates
     with open('./bin/config.yaml', 'r') as f:
         config = yaml.safe_load(f)
+    
+    # set GPIO for upward movement
+    GPIO.output(DIR, GPIO.HIGH)
     
     # start inspiration
     n+=1
@@ -113,15 +145,23 @@ while config["start"] == True:
                 
                 # calc new function for speed of movement
                 ####
-                ####
+                ####                
                 
-                
-        time.sleep(slpIn[i])
+        # Puls modeling wiht half of pause
+        GPIO.output(PUL, GPIO.HIGH)
+        time.sleep(slpIn[i]/2)
+
+        GPIO.output(PUL, GPIO.LOW)
+        time.sleep(slpIn[i]/2)
+        
+        # time.sleep(slpIn[i])
         # time.sleep(dtIns/tStp)
         
     tI1 = time.time()
     dtI = tI1-tI0
 
+    # set GPIO for downward movement
+    GPIO.output(DIR, GPIO.LOW)
    
     # start expiration
     print("Expiration...")
@@ -136,7 +176,14 @@ while config["start"] == True:
             pI = getPres()
             pEc.append(pI)
             
-        time.sleep(slpEx)        
+        # Puls modeling
+        GPIO.output(PUL, GPIO.HIGH)
+        time.sleep(slpEx/2)
+
+        GPIO.output(PUL, GPIO.LOW)
+        time.sleep(slpEx/2)        
+    
+    
     tE1 = time.time()    
     dtE = tE1-tE0
 
