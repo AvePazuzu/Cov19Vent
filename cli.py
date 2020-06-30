@@ -33,6 +33,8 @@ while True:
 
     elif input1 == 'mon':
         subprocess.run(['gnome-terminal', '--', './mon.py'])
+        # on raspbian the following works:
+        # os.system('lxterminal -e ./mon.py &')    
        
     elif input1 == 'start':
         ctl.start()     

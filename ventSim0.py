@@ -15,6 +15,7 @@ import os
 from math import pow
 import RPi.GPIO as GPIO
 
+
       
 # retrieve and save id of process to proc
 pid = os.getpid()
@@ -113,8 +114,8 @@ while config["start"] == True:
     with open('./bin/config.yaml', 'r') as f:
         config = yaml.safe_load(f)
     
-    # set GPIO for upward movement
-    GPIO.output(DIR, GPIO.HIGH)
+    # set GPIO for downward movement
+    GPIO.output(DIR, GPIO.LOW)
     
     # start inspiration
     n+=1
@@ -160,8 +161,8 @@ while config["start"] == True:
     tI1 = time.time()
     dtI = tI1-tI0
 
-    # set GPIO for downward movement
-    GPIO.output(DIR, GPIO.LOW)
+    # set GPIO for upward movement
+    GPIO.output(DIR, GPIO.HIGH)
    
     # start expiration
     print("Expiration...")
