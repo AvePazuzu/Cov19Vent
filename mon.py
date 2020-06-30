@@ -48,15 +48,17 @@ while True:
     #cs = config['status']
     se = config['session']   
     cy = proc['vent_cycle']
-    ti = proc['exp_time']
-    st = proc['proc']
+    ti = proc['ins_time']
+    te = proc['exp_time']
+    # st = proc['proc']
     # ps = pre['prsIs']
     psT = config['pCrt']
          
     print("Session: ", se)
     print("\nProcess active: ", pids)
-    print("\nCycle: ", cy)
+    print("\nCycle: ", cy+1)
     print("\nTime of last inspiration: ", ti)
+    print("\nTime of last expiration: ", te)
     # print("\nPressure actual: ", ps)
     print("\nPressure setpoint: ", psT)
     print("\nPressure status: Okay")

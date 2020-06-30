@@ -1,2 +1,2 @@
-{C: 1.25, Texp: 4.0, TiSF: 1.15, Tins: 3.0, VAZ: 0.35, VolStat: 100, bFrq: 8.57, mPAT: 60.0,
-  pCrt: 175.0, tmps: !!timestamp '2020-06-27 11:41:27.925639', vRst: 0.1}
+{C: 1.25, Texp: 4.5, TiSF: 1.15, Tins: 3.3, VAZ: 0.35, VolStat: 100, bFrq: 7.69, mPAT: 60.0,
+  pCrt: 150.0, tmps: !!timestamp '2020-06-30 11:50:01.444489', vRst: 0.1}

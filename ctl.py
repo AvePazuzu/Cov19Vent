@@ -60,6 +60,19 @@ def stop():
 # =============================================================================
 
 def start():
+    # clear previous session in proc.yaml
+    
+    with open('./bin/proc.yaml', "r") as f:
+        proc = yaml.safe_load(f)
+    
+    proc['exp_time'] = 0
+    proc['ins_time'] = 0
+    proc['pid'] = 0
+    proc['vent_cycle'] = 0
+    
+    with open('./bin/proc.yaml', 'w') as f:
+        yaml.dump(proc, f) 
+    
     with open('./bin/config.yaml', "r") as f:
         config = yaml.safe_load(f)
 
@@ -267,6 +280,7 @@ def setParam():
     with open('./bin/config.yaml') as f:
         config = yaml.safe_load(f)
            
+    config['VAZ'] = iVAZ
     config['Tins'] = iTin
     config['Texp'] = iTex
     config['bFrq'] = bFrq
