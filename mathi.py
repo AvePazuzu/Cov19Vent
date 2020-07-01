@@ -8,6 +8,7 @@ Created on Thu Jun  4 08:01:48 2020
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 
 # =============================================================================
@@ -180,3 +181,26 @@ for i in nk:
     sm.append(d)
 
 plt.plot(nr, sm, "r")
+
+
+# =============================================================================
+# Microsteps calculation
+# =============================================================================
+# Total hight per vent cycle: h[mm] = v[mm³]/(pi*r[mm²]) with 1[ml] = 1000[mm²]
+h = int((.35*1000*1000)/(math.pi * math.pow((0.1*1000/2), 2)))
+    
+# Microsteps per vent cycle: 1mm = 200[mcs]/0.008[m] * h[mm]/1000
+mcs2 = int(200/0.002 * h/1000)
+mcs1 = int(200/0.008 * h/1000)
+
+tin = 3.5*0.85
+
+p = tin/mcs2
+tI0 = time.time()
+for i in range(mcs2):
+    time.sleep(p)
+tI1 = time.time()
+dtI = tI1-tI0   
+
+print(dtI) 
+    

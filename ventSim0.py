@@ -13,10 +13,8 @@ import yaml
 import time
 import os
 from math import pow
-import RPi.GPIO as GPIO
-
-
-      
+# import RPi.GPIO as GPIO
+   
 # retrieve and save id of process to proc
 pid = os.getpid()
 with open('./bin/proc.yaml', 'r') as f:
@@ -81,7 +79,7 @@ slpEx = tExp/tStp
 # =============================================================================
 # Set up GPIO
 # =============================================================================
-
+"""
 # GPIO setup
 GPIO.setmode(GPIO.BOARD)
 
@@ -105,7 +103,7 @@ GPIO.setup(ENA, GPIO.OUT)
 
 # activate and hold motor
 GPIO.output(ENA, ENA_Locked)
-
+"""
 # Vent cycle count
 n = 0
 while config["start"] == True:
@@ -115,7 +113,7 @@ while config["start"] == True:
         config = yaml.safe_load(f)
     
     # set GPIO for downward movement
-    GPIO.output(DIR, GPIO.LOW)
+    # GPIO.output(DIR, GPIO.LOW)
     
     # start inspiration
     n+=1
@@ -149,10 +147,10 @@ while config["start"] == True:
                 ####                
                 
         # Puls modeling wiht half of pause
-        GPIO.output(PUL, GPIO.HIGH)
+        # GPIO.output(PUL, GPIO.HIGH)
         time.sleep(slpIn[i]/2)
 
-        GPIO.output(PUL, GPIO.LOW)
+        # GPIO.output(PUL, GPIO.LOW)
         time.sleep(slpIn[i]/2)
         
         # time.sleep(slpIn[i])
@@ -162,7 +160,7 @@ while config["start"] == True:
     dtI = tI1-tI0
 
     # set GPIO for upward movement
-    GPIO.output(DIR, GPIO.HIGH)
+    # GPIO.output(DIR, GPIO.HIGH)
    
     # start expiration
     print("Expiration...")
@@ -178,10 +176,10 @@ while config["start"] == True:
             pEc.append(pI)
             
         # Puls modeling
-        GPIO.output(PUL, GPIO.HIGH)
+        # GPIO.output(PUL, GPIO.HIGH)
         time.sleep(slpEx/2)
 
-        GPIO.output(PUL, GPIO.LOW)
+        # GPIO.output(PUL, GPIO.LOW)
         time.sleep(slpEx/2)        
     
     

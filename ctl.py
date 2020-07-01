@@ -15,8 +15,8 @@ import subprocess
 import datetime as dt
 import os
 import math
-from time import sleep
-import RPi.GPIO as GPIO
+# from time import sleep
+# import RPi.GPIO as GPIO
                
 # =============================================================================
 # Retrieve parameter set points        
@@ -97,7 +97,10 @@ def start():
         # on raspbian the following works:
         # os.system('lxterminal -e ./mon.py &') 
         
-        os.system('nohup ./ventSim0.py &')  
+        os.system('nohup ./ventSim0.py &') 
+        
+        print("Start successful. Returning to Command & Control Center...")
+        
                
 # =============================================================================
 # set configuration parameters
@@ -290,79 +293,79 @@ def setParam():
     print("\nOptions set.\n")    
 
     # Device calibration
-    calibrate() 
+    # calibrate() 
 
 # =============================================================================
 # Calibration is performed after parameter setting and performs 110% of upward 
 # and two total turns of downward movement
 # =============================================================================
 
-def calibrate():
+# def calibrate():
     
-    print('\nCalibrating divice...\n')
+#     print('\nCalibrating divice...\n')
     
-    # GPIO setup
-    GPIO.setmode(GPIO.BOARD)
+#     # GPIO setup
+#     GPIO.setmode(GPIO.BOARD)
     
-    # Raspberry Pi pin set for TB6600 driver
-    ENA = 37
-    DIR = 35
-    PUL = 33
+#     # Raspberry Pi pin set for TB6600 driver
+#     ENA = 37
+#     DIR = 35
+#     PUL = 33
     
-    # set upward movement 
-    #up = GPIO.HIGH
-    # set down ward movemnt 
-    #down = GPIO.LOW
+#     # set upward movement 
+#     #up = GPIO.HIGH
+#     # set down ward movemnt 
+#     #down = GPIO.LOW
     
-    ENA_Locked = GPIO.LOW
-    # ENA_Released = GPIO.HIGH
+#     ENA_Locked = GPIO.LOW
+#     # ENA_Released = GPIO.HIGH
     
-    GPIO.setwarnings(False)
-    GPIO.setup(DIR, GPIO.OUT)
-    GPIO.setup(PUL, GPIO.OUT)
-    GPIO.setup(ENA, GPIO.OUT)
+#     GPIO.setwarnings(False)
+#     GPIO.setup(DIR, GPIO.OUT)
+#     GPIO.setup(PUL, GPIO.OUT)
+#     GPIO.setup(ENA, GPIO.OUT)
     
-    # activate and hold motor
-    GPIO.output(ENA, ENA_Locked)
+#     # activate and hold motor
+#     GPIO.output(ENA, ENA_Locked)
             
-    # set upward movement
-    GPIO.output(DIR, GPIO.HIGH)
+#     # set upward movement
+#     GPIO.output(DIR, GPIO.HIGH)
     
-    # load and calculate microsteps for upward movement
-    with open('./bin/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
+#     # load and calculate microsteps for upward movement
+#     with open('./bin/config.yaml', 'r') as f:
+#         config = yaml.safe_load(f)
     
-    mcsCal = int(config["McS"] * 1.10)    
-    for i in range(mcsCal):
+#     mcsCal = int(config["McS"] * 1.10)    
+#     for i in range(mcsCal):
 
-        # Puls modeling
-        GPIO.output(PUL, GPIO.HIGH)
-        sleep(0.001)
+#         # Puls modeling
+#         GPIO.output(PUL, GPIO.HIGH)
+#         sleep(0.001)
 
-        GPIO.output(PUL, GPIO.LOW)
-        sleep(0.001)
+#         GPIO.output(PUL, GPIO.LOW)
+#         sleep(0.001)
     
-    # set downward movement
-    GPIO.output(DIR, GPIO.LOW)
+#     # set downward movement
+#     GPIO.output(DIR, GPIO.LOW)
     
-    # load and calculate microsteps steps of two total turns: ttTu
-    with open('./bin/manSP.yaml', 'r') as f:
-        manSP = yaml.safe_load(f)
+#     # load and calculate microsteps steps of two total turns: ttTu
+#     with open('./bin/manSP.yaml', 'r') as f:
+#         manSP = yaml.safe_load(f)
     
-    ttTu = manSP["stepsPT"] * 2
-    for i in range(ttTu):
+#     ttTu = manSP["stepsPT"] * 2
+#     for i in range(ttTu):
         
-        # Puls modeling
-        GPIO.output(PUL, GPIO.HIGH)
-        sleep(0.001)
+#         # Puls modeling
+#         GPIO.output(PUL, GPIO.HIGH)
+#         sleep(0.001)
 
-        GPIO.output(PUL, GPIO.LOW)
-        sleep(0.001)
+#         GPIO.output(PUL, GPIO.LOW)
+#         sleep(0.001)
         
-    # clear GPIO signals
-    GPIO.cleanup()
+#     # clear GPIO signals
+#     GPIO.cleanup()
     		
-    # Release motor
-    # GPIO.output(ENA, ENA_Released)
+#     # Release motor
+#     # GPIO.output(ENA, ENA_Released)
     
-    return print("\nCalibration sucessful. Returning to Control Center...\n")
+#     return print("\nCalibration sucessful. Returning to Control Center...\n")
