@@ -117,7 +117,7 @@ for i in k:
     ft0.append(t0)
     t1 = kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i))
     ft1.append(t1)
-    nM = t0*t1*z
+    nM = (1/.2)*(t0*t1)*z
     nm.append(nM)
 
 sum(nm)/1592    
