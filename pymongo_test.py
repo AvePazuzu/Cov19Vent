@@ -10,7 +10,8 @@ import os
 import pymongo
 import datetime
 import pprint
-import subprocess
+import time
+# import subprocess
 
 # Start service
 # os.system("mongod --dbpath /home/eugen/develop/python/Cov19Vent/data/db2")
@@ -24,13 +25,15 @@ db = client.test_db
 
 col1 = db.test_collection
 
-def appArr():
-    pass
 
+# =============================================================================
+# Speed test for inserting documents
+# =============================================================================
+tI0 = time.time()
 i=0
-for i in range(10):
-    i+=11
-    print(i)
+for i in range(100):
+    i+=110
+    # print(i)
     post3 = {
         #"_id": 10001,
         "author": "Mike",
@@ -41,9 +44,31 @@ for i in range(10):
         "n": i}
 
     col1.insert_one(post3).inserted_id
+tI1 = time.time()
+dtI = tI1-tI0
+print(dtI)
+
+# =============================================================================
+# Speed test for pushing updates into a document array
+# =============================================================================
+
+def update(n, new):
+    col1.update_one({'n': n}, {'$push': {"v": new}})
+
+tU0 = time.time()
+j = 0
+for i in range(100):
+    j += 1
+    
+    update(8, j)
+
+tU1 = time.time()
+dtU = tU1-tU0
+print(dtU)
+
+col1.find_one({"n": 14})
 
 lis = list(col1.find({}))
-
 
 db.list_collection_names()
 
