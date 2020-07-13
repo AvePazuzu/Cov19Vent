@@ -40,7 +40,7 @@ for i in range(100):
         "text": "My first blog post!",
         "tags": ["mongodb", "python", "pymongo"],
         "date": datetime.datetime.utcnow(),
-        "v": [1, 244],
+        "v": [],
         "n": i}
 
     col1.insert_one(post3).inserted_id
@@ -62,11 +62,14 @@ for i in range(100):
     
     update(8, j)
 
+update(20, {"a":5, "b":6})
+
+
 tU1 = time.time()
 dtU = tU1-tU0
 print(dtU)
 
-col1.find_one({"n": 14})
+col1.find_one({"n": 20})
 
 lis = list(col1.find({}))
 

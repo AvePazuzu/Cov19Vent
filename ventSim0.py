@@ -34,6 +34,7 @@ vAZ = config["VAZ"]
 tIns = config["Tins"]
 tExp = config["Texp"]
 tStp = config["McS"]
+c = config["c"]
 
 # =============================================================================
 # Function definition
@@ -54,9 +55,13 @@ def getkP(pi_1, pi, pCrt):
 
 # Complience correction factor
 def getkC(vAZ, pImax, pEavr):
-    #
-    #
-    return
+    # complience based on the last breathing cycle
+    cB_1 = vAZ/(pImax-pEavr)
+    if cB_1 >= c:
+        kC = c/cB_1
+    else:
+        kC = cB_1/c
+    return kC
 
 # based on correction factor inspiration time is determined by
 dtIns = round(tIns + tIns*(pow(kPC, -1) -1), 4)
@@ -70,11 +75,11 @@ if dtIns > tIns*1.15:
 # slpIn = dtIns/tStp
 slpIn = []
 for i in range(tStp):
-    j = dtIns/tStp
+    j = (dtIns-0.00027*tStp)/tStp
     slpIn.append(j)
 
 # speed for expiration
-slpEx = tExp/tStp
+slpEx = (tExp-0.00027*tStp)/tStp
 
 # =============================================================================
 # Set up GPIO
@@ -132,9 +137,10 @@ while config["start"] == True:
         if msI % 20 == 0:            
             pI = getPres()
             pIc.append(pI)
-            # compare pressure and calculate new kPC if necessary
+            # compare pressure to 90% of setpoint and calculate new kPC
+            # via pressure correction function if necessary
             if pI > config["pCrt"]*0.9:                
-                # if presure is to high wait until it is not that high any more
+                # if presure is to high wait 
                 while pI > config["pCrt"]*0.9:
                     time.sleep(0.001)
                     pI = getPres()
@@ -146,19 +152,26 @@ while config["start"] == True:
                 ####
                 ####                
                 
+        """ Each micro stepp takes ca. 0.0003s of calculation 
+            this needs to be substracted from the sleeping time 
+        """    
         # Puls modeling wiht half of pause
         # GPIO.output(PUL, GPIO.HIGH)
         time.sleep(slpIn[i]/2)
+        # time.sleep(0)
 
         # GPIO.output(PUL, GPIO.LOW)
         time.sleep(slpIn[i]/2)
+        # time.sleep(0)
         
         # time.sleep(slpIn[i])
         # time.sleep(dtIns/tStp)
         
     tI1 = time.time()
     dtI = tI1-tI0
-
+   
+    print("Ins Time of last cycle: ", dtI)
+    
     # set GPIO for upward movement
     # GPIO.output(DIR, GPIO.HIGH)
    
@@ -178,20 +191,21 @@ while config["start"] == True:
         # Puls modeling
         # GPIO.output(PUL, GPIO.HIGH)
         time.sleep(slpEx/2)
+        # time.sleep(0)            
 
         # GPIO.output(PUL, GPIO.LOW)
-        time.sleep(slpEx/2)        
-    
+        time.sleep(slpEx/2)            
+        # time.sleep(0)            
     
     tE1 = time.time()    
     dtE = tE1-tE0
 
-    # print("Ext Time of last cycle: ", dtE)
+    print("Ext Time of last cycle: ", dtE)
         
     # calculate complience correction factor
-    kPC = getkC(vAZ, max(pIc), sum(pEc)/len(pEc))
+    # kPC = getkC(vAZ, max(pIc), sum(pEc)/len(pEc))
     
-    # write actual inspiration & expiration time to proc.yaml
+    # write actual inspiration & expiration time of last cycle to proc.yaml
     with open('./bin/proc.yaml', "r") as f:
         proc = yaml.safe_load(f)
 
