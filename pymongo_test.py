@@ -17,15 +17,45 @@ import time
 # os.system("mongod --dbpath /home/eugen/develop/python/Cov19Vent/data/db2")
 # subprocess.run(["mongod", "--dbpath", "/home/eugen/develop/python/Cov19Vent/data/db2"])
 
-client = pymongo.MongoClient()
 
-db = client.test_db
+t = datetime.datetime.now()
+
+client = pymongo.MongoClient()
+# Initiate database
+db = client.cov19Vent
 
 # client.server_info()
 
-col1 = db.test_collection
+# initiate collection
+col = db.vent_sessions
 
 
+param = {"p1": "wer", "p2": 230004, "p3": "wer23" }
+
+post2 = {"session_id": t,
+         "setpoints": param,
+         "records": [{"timestamp": datetime.datetime.now(),
+                     "step":1,
+                     "pressure":1}]}
+
+# insert initial post
+col.insert_one(post2).inserted_id
+
+lis = list(col.find({}))
+bb = col.find_one({"session_id":t})
+for i in bb:
+    print(i)
+    
+    
+pu = {"timestamp": datetime.datetime.now(),
+      "step": 3,
+      "pressure":3}    
+
+tI0 = time.time()
+col.update_one({"session_id":t}, {"$push":{"records": pu}})
+tI1 = time.time()
+dtI = tI1-tI0
+print(dtI)
 # =============================================================================
 # Speed test for inserting documents
 # =============================================================================
