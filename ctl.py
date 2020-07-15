@@ -100,8 +100,7 @@ def start():
         os.system('nohup ./ventSim0.py &') 
         
         print("Start successful. Returning to Command & Control Center...")
-        
-               
+                       
 # =============================================================================
 # set configuration parameters
 # =============================================================================

@@ -36,7 +36,8 @@ while True:
         # on raspbian the following works:
         # os.system('lxterminal -e ./mon.py &')    
     elif input1 == 'db':
-        subprocess.run(['gnome-terminal', '--',"mongod", "--dbpath", "/home/eugen/develop/python/Cov19Vent/data/db2"])        # on raspbian the following works:
+        subprocess.run(['gnome-terminal', '--',"mongod", "--dbpath", "/home/eugen/develop/python/Cov19Vent/data/db2"])        
+        # on raspbian the following works:
         # os.system('lxterminal -e ./mon.py &')    
        
     elif input1 == 'start':

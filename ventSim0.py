@@ -11,6 +11,7 @@ Created on Sat Jun 27 11:13:39 2020
 
 import yaml
 import time
+import datetime
 import os
 from math import pow
 # import RPi.GPIO as GPIO
@@ -25,7 +26,6 @@ proc["pid"] = pid
 with open('./bin/proc.yaml', 'w') as f:
     yaml.dump(proc, f) 
   
-
 # load config and params
 with open('./bin/config.yaml', 'r') as f:
     config = yaml.safe_load(f)
@@ -34,6 +34,7 @@ vAZ = config["VAZ"]
 tIns = config["Tins"]
 tExp = config["Texp"]
 tStp = config["McS"]
+sID = config["session"]
 c = config["c"]
 
 # =============================================================================
@@ -46,7 +47,7 @@ def getPres():
         presIs = yaml.safe_load(f)
     return presIs["prsIs"]    
 
-# correction factor 
+# correction factor is initiated with 1
 kPC = 1
 
 # Pressure correction factor
@@ -109,6 +110,11 @@ GPIO.setup(ENA, GPIO.OUT)
 # activate and hold motor
 GPIO.output(ENA, ENA_Locked)
 """
+
+# =============================================================================
+# Initiate ventilation
+# =============================================================================
+
 # Vent cycle count
 n = 0
 while config["start"] == True:
@@ -135,6 +141,7 @@ while config["start"] == True:
         msI += 1
         # retrive and append pressure every 20 microsteps
         if msI % 20 == 0:            
+            tI = datetime.datetime.now()
             pI = getPres()
             pIc.append(pI)
             # compare pressure to 90% of setpoint and calculate new kPC
@@ -150,7 +157,20 @@ while config["start"] == True:
                 
                 # calc new function for speed of movement
                 ####
-                ####                
+                ####
+                
+        # Get values to push to database
+        rec = {"timestamp": tI,
+               "step": msI,
+               "pressure": pI,
+               "kPC": kPC}
+        
+        """ To ensure ventilation dispite database operation failures
+            exeptions are handled
+        """
+        # Push values to database
+        # try:
+                            
                 
         """ Each micro stepp takes ca. 0.0003s of calculation 
             this needs to be substracted from the sleeping time 

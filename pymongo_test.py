@@ -29,14 +29,14 @@ db = client.cov19Vent
 # initiate collection
 col = db.vent_sessions
 
-
 param = {"p1": "wer", "p2": 230004, "p3": "wer23" }
 
 post2 = {"session_id": t,
          "setpoints": param,
          "records": [{"timestamp": datetime.datetime.now(),
                      "step":1,
-                     "pressure":1}]}
+                     "pressure":1,
+                     "kPC": 1}]}
 
 # insert initial post
 col.insert_one(post2).inserted_id
@@ -52,7 +52,13 @@ pu = {"timestamp": datetime.datetime.now(),
       "pressure":3}    
 
 tI0 = time.time()
-col.update_one({"session_id":t}, {"$push":{"records": pu}})
+
+try:
+    col.update_one({"session_id":t}, {"$push":{"records": pu}})
+except:
+    print("DB operation failed")
+print("Next")
+
 tI1 = time.time()
 dtI = tI1-tI0
 print(dtI)
