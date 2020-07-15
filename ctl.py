@@ -13,11 +13,57 @@ Created on Wed May  6 19:23:57 2020
 import yaml
 import subprocess
 import datetime as dt
+import pymongo
 import os
 import math
 # from time import sleep
 # import RPi.GPIO as GPIO
                
+# =============================================================================
+# Database operations
+# =============================================================================
+
+# Initiate Database and insert first document
+def startDB():
+
+    # Start database process
+    try:
+        subprocess.run(['gnome-terminal', '--',"mongod", "--dbpath", "/home/eugen/develop/python/Cov19Vent/data/db2"])        
+    # on raspbian the following works:
+    # os.system('lxterminal -e ./mon.py &') 
+    except:
+        print("Starting DB service failed.")
+    
+    # Setup DB and insert first document
+    try:
+        client = pymongo.MongoClient()
+        # Initiate database
+        db = client.cov19Vent
+        # Set collection
+        col = db.vent_sessions
+    except:
+        print("Database setup failed.")
+        
+    # Initiate and insert first document of session
+    with open('./bin/param.yaml', "r") as f:
+       param = yaml.safe_load(f) 
+    
+    rec0 = {"session_id": param["tmps"],
+            "setpoints": param,
+            "records":[]}
+    try:
+        col.insert_one(rec0).inserted_id
+    except:
+        print("First DB insert failed.")
+    
+# Push new records to document
+def pushToDB(col, sID, rec):
+    
+    try:    
+        col.update_one({"session_id": sID}, {"$push":{"records": rec}})
+    except:
+        print("Pushing record to database failed.")
+        
 # =============================================================================
 # Retrieve parameter set points        
 # =============================================================================
@@ -285,6 +331,7 @@ def setParam():
     config['pCrt'] = pCrt
     config['McS'] = mcs
     config['optSet'] = True
+    config["session"] = tmps
  
     with open('./bin/config.yaml', 'w') as f:
         yaml.dump(config, f)   

@@ -13,8 +13,26 @@ import yaml
 import time
 import datetime
 import os
+import pymongo
+from ctl import pushToDB
 from math import pow
 # import RPi.GPIO as GPIO
+
+# =============================================================================
+# Connect to database
+# =============================================================================
+try:
+    client = pymongo.MongoClient()
+    # Initiate database
+    db = client.cov19Vent
+    # Set collection
+    col = db.vent_sessions
+except:
+    print("Connecting to database failed.")
+
+# =============================================================================
+# Setup process and configurations
+# =============================================================================
    
 # retrieve and save id of process to proc
 pid = os.getpid()
@@ -71,7 +89,6 @@ dtIns = round(tIns + tIns*(pow(kPC, -1) -1), 4)
 if dtIns > tIns*1.15:
     dtIns = (tIns * 1.15)
     
-
 # pause to determine movement speed
 # slpIn = dtIns/tStp
 slpIn = []
@@ -165,11 +182,9 @@ while config["start"] == True:
                "pressure": pI,
                "kPC": kPC}
         
-        """ To ensure ventilation dispite database operation failures
-            exeptions are handled
-        """
         # Push values to database
-        # try:
+        pushToDB(col, config["session"], rec)
+
                             
                 
         """ Each micro stepp takes ca. 0.0003s of calculation 
