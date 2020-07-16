@@ -19,18 +19,35 @@ import yaml
 # os.system("mongod --dbpath /home/eugen/develop/python/Cov19Vent/data/db2")
 # subprocess.run(["mongod", "--dbpath", "/home/eugen/develop/python/Cov19Vent/data/db2"])
 
+with open('./bin/config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+    
+sID = config["session"]    
+
+try:
+    client = pymongo.MongoClient()
+    # Initiate database
+    db = client.cov19Vent
+    
+    # client.server_info()
+    
+    # initiate collection
+    col = db.sID
+except:
+    print("connection failed.")
+
+lis = list(col.find({}))
+
+
+
+
+
+
+
+
+
 
 t = datetime.datetime.now()
-
-client = pymongo.MongoClient()
-# Initiate database
-db = client.cov19Vent
-
-# client.server_info()
-
-# initiate collection
-col = db.vent_sessions
-
 param = {"p1": "wer", "p2": 230004, "p3": "wer23" }
 
 post2 = {"session_id": t,
@@ -39,31 +56,43 @@ post2 = {"session_id": t,
                      "step":1,
                      "pressure":1,
                      "kPC": 1}]}
+post3 = {"session_id": t,
+         "setpoints": param,
+         "records": []}
 
 # insert initial post
-col.insert_one(post2).inserted_id
+col.insert_one(post3).inserted_id
 
-lis = list(col.find({}))
-bb = col.find_one({"session_id":t})
-for i in bb:
-    print(i)
+
+
+
+
+
+
+
+# bb = col.find_one({"session_id":t})
+# for i in bb:
+#     print(i)
+# tI0 = time.time()
     
     
-pu = {"timestamp": datetime.datetime.now(),
-      "step": 3,
-      "pressure":3}    
 
-tI0 = time.time()
+def up():
+    pu = {"timestamp": datetime.datetime.now(),
+          "step": 23,
+          "pressure":23}    
+    try:
+        col.update_one({"session_id":t}, {"$push":{"records": pu}})
+    except:
+        print("DB operation failed")
 
-try:
-    col.update_one({"session_id":t}, {"$push":{"records": pu}})
-except:
-    print("DB operation failed")
+up()
+
 print("Next")
 
-tI1 = time.time()
-dtI = tI1-tI0
-print(dtI)
+# tI1 = time.time()
+# dtI = tI1-tI0
+# print(dtI)
 # =============================================================================
 # Speed test for inserting documents
 # =============================================================================

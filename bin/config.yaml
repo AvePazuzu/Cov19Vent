@@ -1,3 +1,13 @@
-{McS: 4400, Texp: 4.0, Tins: 3.5, VAZ: 0.35, bFrq: 8.0, c: 1.25, calibrate: false,
-  optSet: true, pCrt: 160.0, pres: 9, proc: false, session: !!timestamp '2020-07-01
-    11:05:08.211035', start: true}
+McS: 4400
+Texp: 4.0
+Tins: 3.0
+VAZ: 0.35
+bFrq: 8.57
+c: 1.25
+calibrate: false
+optSet: false
+pCrt: 170.0
+pres: 9
+proc: false
+session: 2020-07-16 09:59:16
+start: false

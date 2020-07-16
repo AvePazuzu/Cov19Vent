@@ -19,18 +19,6 @@ from math import pow
 # import RPi.GPIO as GPIO
 
 # =============================================================================
-# Connect to database
-# =============================================================================
-try:
-    client = pymongo.MongoClient()
-    # Initiate database
-    db = client.cov19Vent
-    # Set collection
-    col = db.vent_sessions
-except:
-    print("Connecting to database failed.")
-
-# =============================================================================
 # Setup process and configurations
 # =============================================================================
    
@@ -54,6 +42,18 @@ tExp = config["Texp"]
 tStp = config["McS"]
 sID = config["session"]
 c = config["c"]
+
+# =============================================================================
+# Connect to database
+# =============================================================================
+try:
+    client = pymongo.MongoClient()
+    # Initiate database
+    db = client.cov19Vent
+    # Set collection
+    col = db.sID
+except:
+    print("Connecting to database failed.")
 
 # =============================================================================
 # Function definition
@@ -157,7 +157,7 @@ while config["start"] == True:
     for i in range(tStp):
         msI += 1
         # retrive and append pressure every 20 microsteps
-        if msI % 20 == 0:            
+        if msI % 50 == 0:            
             tI = datetime.datetime.now()
             pI = getPres()
             pIc.append(pI)
@@ -176,16 +176,21 @@ while config["start"] == True:
                 ####
                 ####
                 
-        # Get values to push to database
-        rec = {"timestamp": tI,
-               "step": msI,
-               "pressure": pI,
-               "kPC": kPC}
-        
-        # Push values to database
-        pushToDB(col, config["session"], rec)
-
-                            
+            # Get values to push to database
+            rec = {"timestamp": tI,
+                   "vent_cycle": n,
+                   "step": msI,
+                   "pressure": pI,
+                   "kPC": kPC}
+            
+            # Push values to database
+            try:    
+                col.insert_one(rec).inserted_id
+            except:
+                print("Pushing record to database failed.")
+            
+           # pushToDB(col, config["session"], rec)
+                           
                 
         """ Each micro stepp takes ca. 0.0003s of calculation 
             this needs to be substracted from the sleeping time 
@@ -205,7 +210,7 @@ while config["start"] == True:
     tI1 = time.time()
     dtI = tI1-tI0
    
-    print("Ins Time of last cycle: ", dtI)
+    # print("Ins Time of last cycle: ", dtI)
     
     # set GPIO for upward movement
     # GPIO.output(DIR, GPIO.HIGH)
@@ -220,8 +225,8 @@ while config["start"] == True:
     for i in range(tStp):
         msE += 1
         if msE % 20 == 0:
-            pI = getPres()
-            pEc.append(pI)
+            pE = getPres()
+            pEc.append(pE)
             
         # Puls modeling
         # GPIO.output(PUL, GPIO.HIGH)
@@ -235,7 +240,7 @@ while config["start"] == True:
     tE1 = time.time()    
     dtE = tE1-tE0
 
-    print("Ext Time of last cycle: ", dtE)
+    # print("Ext Time of last cycle: ", dtE)
         
     # calculate complience correction factor
     # kPC = getkC(vAZ, max(pIc), sum(pEc)/len(pEc))

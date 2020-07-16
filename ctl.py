@@ -24,7 +24,7 @@ import math
 # =============================================================================
 
 # Initiate Database and insert first document
-def startDB():
+def startDB(sID):
 
     # Start database process
     try:
@@ -40,7 +40,7 @@ def startDB():
         # Initiate database
         db = client.cov19Vent
         # Set collection
-        col = db.vent_sessions
+        col = db.sID
     except:
         print("Database setup failed.")
         
@@ -49,8 +49,7 @@ def startDB():
        param = yaml.safe_load(f) 
     
     rec0 = {"session_id": param["tmps"],
-            "setpoints": param,
-            "records":[]}
+            "setpoints": param}
     try:
         col.insert_one(rec0).inserted_id
     except:
@@ -133,7 +132,7 @@ def start():
         # declare variable for subprocesss
         # config['status'] = 'running'
         config["start"] = True
-        config['session'] = dt.datetime.now()
+        # config['session'] = dt.datetime.now()
         # config['optSet'] = False
         with open('./bin/config.yaml', 'w') as f:
             yaml.dump(config, f)
@@ -292,7 +291,7 @@ def setParam():
             break
     
     # 9. Modification time stamp
-    tmps = dt.datetime.now()
+    tmps = dt.datetime.now().replace(microsecond=0)
     print("\nModification time stamp: " + str(tmps))
     
     # Load binary and set parameters        
@@ -340,6 +339,9 @@ def setParam():
 
     # Device calibration
     # calibrate() 
+    
+    # Start database service
+    startDB(tmps)
 
 # =============================================================================
 # Calibration is performed after parameter setting and performs 110% of upward 
