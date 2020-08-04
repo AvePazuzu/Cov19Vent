@@ -276,14 +276,14 @@ def setParam():
             break
                    
     # 8. Maximum airway pressure
-    phr8 = "\nPlease enter maximum airway pressure (max 175[Pa]): "        
+    phr8 = "\nPlease enter maximum airway pressure (max 2500[Pa]): "        
     while True:       
         try: 
             pCrt = float(input(phr8))
         except ValueError: 
             print("Entered value is not valid.")
             continue                   
-        if  pCrt > 175:
+        if  pCrt > 2500:
             print("Maximum airway pressure to high.")            
         else:
             # Write to param here
