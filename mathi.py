@@ -9,35 +9,43 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import sympy
+import cmath
+import numpy as np
+from scipy import roots
+
+x = sympy.Symbol('x')
+
+k = sympy.solve(x**2 - 4, x)
+l = float(k[0])
 
 # =============================================================================
 # Step by step implimentation of flow - 1l = 0.001m³
 # =============================================================================
-vAZ = .500 # [l] 1l = 1000000 mm³
+vAZ = .55 # [l] 1l = 1000000 mm³
 # vAZ = 0.0006 # [m³] 1l = 1000000 mm³
 
 kPC = 1
-tIns = 5
+# tIns = 5
 
-hVc = vAZ/(math.pi*math.pow(0.1/2, 2))
+# hVc = vAZ/(math.pi*math.pow(0.1/2, 2))
 
-tStp = int(200/8 * hVc)
-
+# tStp = int(200/8 * hVc)
+tStp = 100
 
 # Calculated new inspiration time with respect of kPC
-dt = round(tIns + tIns*(math.pow(kPC, -1) -1), 4)
+# dt = round(tIns + tIns*(math.pow(kPC, -1) -1), 4)
 
 # isperation flow    
 
-t = 3
-d = round(t + t*(math.pow(kPC, -1) - 1), 2)
+t0 = 5
+d = round(t0 + t0*(math.pow(kPC, -1) - 1), 2)
 k0 = np.arange(0, d+(d/tStp), d/tStp)    
-
 
 # =============================================================================
 # 
 # =============================================================================
-# Calculated list y of time steps vflr
+# Calculated list y of time steps vapproximateflr
 # y = []
 # for i in range(tStp+1):
 #     # ispiration time devided amount of steps
@@ -62,6 +70,72 @@ m = []
 for i in k0:
     vflr = 6*vAZ*kPC*((-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,2)) + ((1/kPC*(math.pow(d, -2)))*i)) 
     m.append(vflr)
+plt.plot(k0, m, "r")
+
+# Supplied vol over time: Integrated flow function
+mm = []
+for i in k0:
+    vflr = 6*vAZ*kPC*((1/3)*(-(1/kPC)*(math.pow(d, (-3)))*math.pow(i,3)) + ((1/2)*(1/kPC*(math.pow(d, -2)))*(i*i))) 
+    mm.append(vflr)
+plt.plot(k0, mm, "b")
+
+max(mm)
+
+hVc = vAZ/(math.pi*math.pow(0.1/2, 2)) # vertical hight 
+stp = int(200/8 * hVc) # amount per steps
+vps = (vAZ)/stp # supplied volume per micro step
+vsr = np.arange(0, vAZ+vps, vps) # volume range
+
+# Define sympy symbol
+x = sympy.Symbol('x')
+tI0 = time.time()
+res = []
+for i in vsr:
+    k = sympy.solve(6*vAZ*kPC*((1/3)*(-(1/kPC)*(d**(-3))*x**3) + ((1/2)*(1/kPC*(math.pow(d, -2)))*(x**2))) - i, x)
+    res.append(k)
+tI1 = time.time()
+dtI = tI1-tI0; print(dtI)
+res0 = []    
+for i in res:    
+    l = i[1].as_coeff_add()
+    m = float(l[1][0])
+    res0.append(m)
+    res0[0] = 0
+
+ji = []
+ij = 0
+for i in range(len(res0)):
+    if i > 0:
+        ij = res0[i]-res0[i-1]
+        ji.append(ij)  
+
+sum(ji)
+min(ji)
+plt.plot(vsr[:-1], ji, "r")
+
+tI0 = time.time()
+for i in range(stp): 
+
+    time.sleep(ji[i]-0.000145)
+tI1 = time.time()
+dtI = tI1-tI0; print(dtI)
+
+t = sympy.solve((-1/27)*x**3+(1/6)*x**2-0.15, x)
+ll = t[1].as_coeff_add()
+nn = float(ll[1][0])
+for i in dd:
+
+    print(cmath.phase(i))
+    
+          #Cardanien formular
+
+u = math.pow((3.375 + 3.6 + math.sqrt((1/16 + 729/64))), (1/3))
+v = math.pow((3.375 + 3.6 - math.sqrt((1/16 + 729/64))), (1/3))
+
+x = u + v -(4.5/3) 
+t = 1.022
+-1/27*math.pow(t,3)+1/6*math.pow(t, 2)
+
 
 # Commulated sum of supplied volume
 n = []
@@ -76,7 +150,7 @@ plt.show()
 
 # Vertical movement in [m/s] based on volume supplied
 # 1950 micro steps are (0.008/200)*1950 [m] vertical movement    
-tStp * (0.008/200)
+# tStp * (0.008/200)
 k = []
 kl = 0
 for i in m:
@@ -96,7 +170,6 @@ plt.show()
 
 
 # vertical movement in micro steps 
-
 vms = []
 for i in k:
     vm = i*(200/0.008)
@@ -107,22 +180,55 @@ lh=0
 for i in vms:
     lh+=i*(d/tStp)
     lv.append(lh)
+plt.plot(k0, lv, "b")
+
+
+gg = []
+i = 0
+while i < len(lv[1:]):
+    h = (lv[i+1]-lv[i])
+    i += 1
+    gg.append(h)
+plt.plot(k0[1:], gg, "b")
 
 hh = []    
-for i in vms[1:-1]:
-    h = k[1]*i
+for i in gg[1:-1]:
+    h = k0[1]*(i/(d/tStp))
     hh.append(h)
-plt.plot(k0[1:-1], hh, "b")
+plt.plot(k0[2:-1], hh, "b")
+
+sum(hh)
+len(lv[1:])
+    
+tI0 = time.time()
+for i in range(len(k0[3:])):
+    time.sleep(hh[i])
+tI1 = time.time()
+dtI = tI1-tI0
+print(dtI)
+
+hh2 = []
+h2 = 0
+for i in hh:
+    h2+=i*(d/tStp)
+    hh2.append(h2)
 
 
-sum(hh)    
-max(lv)
+plt.plot(k0[1:-1], hh2, "r")
+
+sum(hh)
+max(hh2)    
+k0[1]/(max(vms)*k0[1])
 
 
 plt.plot(k0, vms, "b")
 plt.plot(k0, lv, "r")
-plt.show()    
+plt.show()
     
+# =============================================================================
+#     
+# =============================================================================
+
 # speed based on speed function: v[m/s] = s / t
 vi = []
 for i in range(len(k0[1:])):
@@ -377,10 +483,124 @@ print(dtI)
 
 3 <= 4 
 
-
 kk = 0
 for i in range(tStp):
     kk+=d/tStp
 
 print(kk)
 
+# =============================================================================
+# Triangle function
+# =============================================================================
+
+mh = 0.55 # maximum supplied vol in [l]
+mt = 5 # maximum time range
+
+hVc = mh/(math.pi*math.pow(0.1/2, 2)) # vertical hight 
+stp = int(200/8 * hVc) # amount per steps
+vps = (mh)/stp # supplied volume per micro step
+vsr = np.arange(0, mh+vps, vps) # volume-x = sympy.Symbol('x')
+   
+a = (2*(0.5*mh)) / ((0.5*mt)*(0.5*mt))
+
+stt = 100 # Time steps for plotting
+ll = np.arange(0, mt+(mt/stt), mt/stt) # Plotting array
+
+# =============================================================================
+# Determine acceleration for first half of movement
+# =============================================================================
+jj=[]
+v = 0
+for i in ll:
+    if i <=mt*0.5:
+        v =a*(i)
+    else:
+        v = a*((mt-i))
+    jj.append(v)
+plt.plot(ll, jj, "r")
+
+# =============================================================================
+# Sum of velocity * way delta
+# =============================================================================
+uu = []
+h = 0
+for i in jj:
+    h += i*(mt/stt)
+    uu.append(h)
+plt.plot(ll, uu, "r")
+max(uu)
+# =============================================================================
+# Integral 2
+# =============================================================================
+nn = []
+n = 0
+for i in ll:
+    if i <= mt*0.5:
+        n = 0.5*a*(i*i)
+    else:
+        n = -(0.5*a)*(i*i) + (a*mt)*i - mh
+        # n = i*(0.4-0.04*i)-mh
+    nn.append(n)
+
+plt.plot(ll, nn, "r")
+max(nn)    
+
+
+x = sympy.Symbol('x')
+k = sympy.solve(-0.5*a*x**2 + a*mt*x - (mh + 0.25), x)
+sympy.solve(-0.5*a*x**2 + a*mt*x - (mh + 0.39), x)
+sympy.solve(-0.5*a*x**2 + a*x -(mh + 0.3), x)
+l = float(k[0])
+l = 
+cmath.phase(k[0])
+
+# =============================================================================
+# p-q formular
+# =============================================================================
+tI0 = time.time()
+xx = []
+i = 0
+for j in vsr:
+    if j < mh*0.5: 
+        x = math.sqrt((j/(0.5*a)))
+    else:
+        x = -(0.5*(-2*mt)) - math.sqrt((math.pow((2*mt*0.5),2)-((2*(mh+j)))/a))
+    xx.append(x)    
+plt.plot(vsr, xx, "r")
+max(xx)
+
+# y = 0.4 
+# p = -2*mt
+# q = (2*(mh+y))/a
+# -(0.5*p) - math.sqrt((math.pow((-p*0.5),2)-q))
+
+ji = []
+ij = 0
+for i in range(len(xx)):
+    if i > 0:
+        ij = xx[i]-xx[i-1]
+        ji.append(ij)    
+tI1 = time.time()
+dtI = tI1-tI0; print(dtI)
+sum(ji)
+min(ji)
+
+# gg=[]
+# for i in range(len(ji)):
+#     g = ji[len(ji)-1-i]
+#     gg.append(g)
+    
+    
+# new = ji+gg    
+# sum(new)  
+# plt.plot(vsr[:-1], new, "r") 
+
+tI0 = time.time()
+for i in range(stp): 
+
+    time.sleep(ji[i]-0.000145)
+tI1 = time.time()
+dtI = tI1-tI0; print(dtI)
+
+
+0.235/stp
