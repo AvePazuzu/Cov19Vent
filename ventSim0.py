@@ -26,7 +26,6 @@ from math import pow
 pid = os.getpid()
 with open('./bin/proc.yaml', 'r') as f:
     proc = yaml.safe_load(f)
-
 proc["pid"] = pid
 
 with open('./bin/proc.yaml', 'w') as f:
