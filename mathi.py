@@ -11,7 +11,7 @@ import numpy as np
 import time
 import sympy
 import scipy
-from scipy.optimize import fsolve
+
 # x = sympy.Symbol('x')
 # k = sympy.solve(x**2 - 4, x)
 # l = float(k[0])
@@ -72,23 +72,23 @@ for i in vsr:
     res.append(k)
 tI1 = time.time()
 dtI = tI1-tI0; print(dtI)
-res = []
 
-# solve with numpy.roots
-tI0 = time.time()
-res = []
-for i in vsr:
-    k = np.roots([(6*vAZ*kPC*((1/3)*(-(1/kPC)*(d**(-3))))), ((1/2)*(1/kPC*d**(-2))), 0, -i])
-    res.append(k)
-tI1 = time.time()
-dtI = tI1-tI0; print(dtI)
+
+# # solve with numpy.roots
+# tI0 = time.time()
+# res = []
+# for i in vsr:
+#     k = np.roots([(6*vAZ*kPC*((1/3)*(-(1/kPC)*(d**(-3))))), ((1/2)*(1/kPC*d**(-2))), 0, -i])
+#     res.append(k)
+# tI1 = time.time()
+# dtI = tI1-tI0; print(dtI)
 
 # Use SymPy method to convert add type to tuple
 res0 = []    
 for i in res:    
     l = i[1].as_coeff_add()
-    m = float(l[1][0])
-    res0.append(m)
+    m1 = float(l[1][0])
+    res0.append(m1)
     res0[0] = 0
 plt.plot(vsr, res0, "b") # plot: Cubic time over volume
 
@@ -123,13 +123,17 @@ dtI = tI1-tI0; print(dtI)
 # Triangle function
 # =============================================================================
 
-mh = 0.55 # maximum supplied vol in [l]
+mh = 0.5 # maximum supplied vol in [l]
 mt = 5 # maximum time range
 
-hVc = mh/(math.pi*math.pow(0.1/2, 2)) # vertical hight 
-stp = int(200/8 * hVc) # amount per steps
+hVc = mh/(math.pi*math.pow(0.1/2, 2))/1000 # vertical hight 
+stp = 200/0.008 * hVc # steps
 vps = (mh)/stp # supplied volume per micro step
-vsr = np.arange(0, mh+vps, vps) # volume-x = sympy.Symbol('x')
+vps2 = (math.pi*(math.pow(0.05, 2) * 0.04/1000)*1000)
+
+vps2*stp
+
+vsr = np.arange(0, mh+vps, vps) # volume
 
 # Determine acceleration for first half of movement   
 a = (2*(0.5*mh)) / ((0.5*mt)*(0.5*mt))
@@ -140,6 +144,7 @@ ll = np.arange(0, mt+(mt/stt), mt/stt) # Plotting array
 # =============================================================================
 # Linear volume flow
 # =============================================================================
+
 jj=[]
 v = 0
 for i in k0:
@@ -214,6 +219,7 @@ dtI = tI1-tI0; print(dtI)
 # =============================================================================
 # SymPy solution
 # =============================================================================
+
 x = sympy.Symbol('x')
 k = sympy.solve(-0.5*a*x**2 + a*mt*x - (mh + 0.25), x)
 sympy.solve(-0.5*a*x**2 + a*mt*x - (mh + 0.39), x)
@@ -221,7 +227,7 @@ sympy.solve(-0.5*a*x**2 + a*x -(mh + 0.3), x)
 l = float(k[0])
 
 # =============================================================================
-# Pott comparison
+# Plot comparison
 # =============================================================================
 
 plt.plot(k0, m, "black")# plot: Quadratic volume flow

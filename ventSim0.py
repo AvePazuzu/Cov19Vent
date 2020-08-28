@@ -16,6 +16,7 @@ import os
 import pymongo
 from ctl import pushToDB
 from math import pow
+from flow import ins_flow, exp_flow
 # import RPi.GPIO as GPIO
 
 # =============================================================================
@@ -49,7 +50,7 @@ try:
     client = pymongo.MongoClient()
     # Initiate database
     db = client.cov19Vent
-    # Set collection
+    # Set collection for the sesstion with the session ID
     col = db.sID
 except:
     print("Connecting to database failed.")
@@ -88,15 +89,12 @@ dtIns = round(tIns + tIns*(pow(kPC, -1) -1), 4)
 if dtIns > tIns*1.15:
     dtIns = (tIns * 1.15)
     
-# pause to determine movement speed
-# slpIn = dtIns/tStp
-slpIn = []
-for i in range(tStp):
-    j = (dtIns-0.00027*tStp)/tStp
-    slpIn.append(j)
+# Micro step delay array to determine movement speed 
+slpIn = ins_flow() # delays for inspiration
+slpEx = exp_flow() # delays for expiration
 
-# speed for expiration
-slpEx = (tExp-0.00027*tStp)/tStp
+# Factor to account for computational time; is substracted from delay
+cT = 0.00029
 
 # =============================================================================
 # Set up GPIO
@@ -163,7 +161,7 @@ while config["start"] == True:
             # compare pressure to 90% of setpoint and calculate new kPC
             # via pressure correction function if necessary
             if pI > config["pCrt"]*0.9:                
-                # if presure is to high wait 
+                # if presure is to high --> wait 
                 while pI > config["pCrt"]*0.9:
                     time.sleep(0.001)
                     pI = getPres()
@@ -183,33 +181,27 @@ while config["start"] == True:
                    "kPC": kPC}
             
             # Push values to database
-            try:    
-                col.insert_one(rec).inserted_id
-            except:
-                print("Pushing record to database failed.")
+            # try:    
+            #     col.insert_one(rec).inserted_id
+            # except:
+            #     print("Pushing record to database failed.")
             
            # pushToDB(col, config["session"], rec)
-                           
-                
-        """ Each micro stepp takes ca. 0.0003s of calculation 
-            this needs to be substracted from the sleeping time 
+                                           
+        """ Each micro stepp takes ca. 0.0003s of calculation, 
+            this time needs to be substracted from the sleeping time 
         """    
         # Puls modeling wiht half of pause
         # GPIO.output(PUL, GPIO.HIGH)
-        time.sleep(slpIn[i]/2)
-        # time.sleep(0)
+        time.sleep((slpIn[i]-cT)/2)
 
         # GPIO.output(PUL, GPIO.LOW)
-        time.sleep(slpIn[i]/2)
-        # time.sleep(0)
-        
-        # time.sleep(slpIn[i])
-        # time.sleep(dtIns/tStp)
+        time.sleep((slpIn[i]-cT)/2)
         
     tI1 = time.time()
     dtI = tI1-tI0
    
-    # print("Ins Time of last cycle: ", dtI)
+    print("Ins Time of last cycle: ", dtI)
     
     # set GPIO for upward movement
     # GPIO.output(DIR, GPIO.HIGH)
@@ -223,23 +215,21 @@ while config["start"] == True:
     pEc = []
     for i in range(tStp):
         msE += 1
-        if msE % 20 == 0:
+        if msE % 50 == 0:
             pE = getPres()
             pEc.append(pE)
             
         # Puls modeling
         # GPIO.output(PUL, GPIO.HIGH)
-        time.sleep(slpEx/2)
-        # time.sleep(0)            
+        time.sleep((slpEx[i]-cT)/2)          
 
         # GPIO.output(PUL, GPIO.LOW)
-        time.sleep(slpEx/2)            
-        # time.sleep(0)            
+        time.sleep((slpEx[i]-cT)/2)                               
     
     tE1 = time.time()    
     dtE = tE1-tE0
 
-    # print("Ext Time of last cycle: ", dtE)
+    print("Ext Time of last cycle: ", dtE)
         
     # calculate complience correction factor
     # kPC = getkC(vAZ, max(pIc), sum(pEc)/len(pEc))

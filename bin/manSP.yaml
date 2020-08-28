@@ -2,7 +2,7 @@
 dmtP: 0.100
 
 # upward gradient of spindle in [m]
-grad: 0.002
+grad: 0.008
 
 # amount of microsteps per total turn
 stepsPT: 200
@@ -10,6 +10,6 @@ stepsPT: 200
 # max spindle lenght in [m]
 spL: 0.140
 
-# mm per microstep: upward gradient / microsteps per total turn (8/200)
-wpMS: 0.01
+# mm per microstep: (upward gradient) / (microsteps per total turn) --> (8/200)
+wpMS: 0.04
 

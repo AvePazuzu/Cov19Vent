@@ -341,7 +341,7 @@ def setParam():
     # calibrate() 
     
     # Start database service
-    startDB(tmps)
+    # startDB(tmps)
 
 # =============================================================================
 # Calibration is performed after parameter setting and performs 110% of upward 

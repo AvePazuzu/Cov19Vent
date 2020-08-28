@@ -8,7 +8,6 @@ Created on Wed May  6 17:12:19 2020
 import ctl
 import subprocess
 
-
 print("\nProgram started...")
 
 cc = ("\nControl commands:\n"
@@ -17,6 +16,7 @@ cc = ("\nControl commands:\n"
       "--> 'stop' to stop the divice\n"
       "--> 'stats' to view config\n"
       "--> 'mon' to to start session monitor\n"
+      "--> 'db' to to start mongodb service\n"
       "--> 'e' to exit\n")
 print(cc)
 
@@ -51,8 +51,10 @@ while True:
        
     elif input1 == 'stats': 
         ctl.getStats()
+
+    elif input1 == 'stats': 
+        ctl.getStats()
        
     else:
         print("\nNot an option, please enter valid option or 'help' to view the commands.\n")
-        
-        
+               

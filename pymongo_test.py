@@ -40,13 +40,6 @@ lis = list(col.find({}))
 
 
 
-
-
-
-
-
-
-
 t = datetime.datetime.now()
 param = {"p1": "wer", "p2": 230004, "p3": "wer23" }
 
