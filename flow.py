@@ -17,21 +17,13 @@ import numpy as np
 import math
 
 # Delay array for liniear inpiration flow
-def ins_flow():
-
-    # load config and params
-    with open('./bin/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    
-    vAZ = config["VAZ"] # maximum volume supplied [l]
-    tIns = config["Tins"] # insperation time [s]
-    tStp = config["McS"] # Micro steps for total volume
-    
+def ins_flow(dtIns, vAZ, tStp):
+   
     vps = (vAZ)/tStp # supplied volume per micro step
     vsr = np.arange(0, vAZ+vps, vps) # volume stesp array
     
     # Determine acceleration for first half of movement of inspiration    
-    aIns = (2*(0.5*vAZ)) / ((0.5*tIns)*(0.5*tIns))
+    aIns = (2*(0.5*vAZ)) / ((0.5*dtIns)*(0.5*dtIns))
         
     # calculate roots with p-q formular
     rtIns = []
@@ -39,7 +31,7 @@ def ins_flow():
         if j < vAZ*0.5: 
             x = math.sqrt((j/(0.5*aIns)))
         else:
-            x = -(0.5*(-2*tIns)) - math.sqrt((math.pow((2*tIns*0.5),2)-((2*(vAZ+j)))/aIns))
+            x = -(0.5*(-2*dtIns)) - math.sqrt((math.pow((2*dtIns*0.5),2)-((2*(vAZ+j)))/aIns))
         rtIns.append(x)    
         
     # Time deltas between volume steps 

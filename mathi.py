@@ -25,7 +25,7 @@ vAZ = .55 # [l] 1l = 1000000 mm³
 kPC = 1
 # tIns = 5
 
-# hVc = vAZ/(math.pi*math.pow(0.1/2, 2))
+hVc = vAZ/(math.pi*math.pow(0.1/2, 2))
 
 # tStp = int(200/8 * hVc)
 tStp = 100
@@ -115,7 +115,7 @@ min(jiC)
 # Test run for microstep activation
 tI0 = time.time()
 for i in range(stp): 
-    time.sleep(jiC[i]-0.000145)
+    time.sleep(jiC[i]-0.00014)
 tI1 = time.time()
 dtI = tI1-tI0; print(dtI)
 
@@ -123,15 +123,14 @@ dtI = tI1-tI0; print(dtI)
 # Triangle function
 # =============================================================================
 
-mh = 0.5 # maximum supplied vol in [l]
+mh = 0.55 # maximum supplied vol in [l]
 mt = 5 # maximum time range
 
 hVc = mh/(math.pi*math.pow(0.1/2, 2))/1000 # vertical hight 
 stp = 200/0.008 * hVc # steps
 vps = (mh)/stp # supplied volume per micro step
-vps2 = (math.pi*(math.pow(0.05, 2) * 0.04/1000)*1000)
+# vps2 = (math.pi*(math.pow(0.05, 2) * 0.04/1000)*1000)
 
-vps2*stp
 
 vsr = np.arange(0, mh+vps, vps) # volume
 
@@ -185,7 +184,6 @@ plt.plot(ll, uu, "r")
 # =============================================================================
 tI0 = time.time()
 xx = []
-i = 0
 for j in vsr:
     if j < mh*0.5: 
         x = math.sqrt((j/(0.5*a)))

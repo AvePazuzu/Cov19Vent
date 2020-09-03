@@ -83,10 +83,10 @@ def getkC(vAZ, pImax, pEavr):
     return kC
 
 # based on correction factor inspiration time is determined by
-dtIns = round(tIns + tIns*(pow(kPC, -1) -1), 4)
+dtIns = round(tIns + tIns*(kPC**-1 - 1), 4)
 
 # the correction of inspiration time shell not be greater than 1.15
-if dtIns > tIns*1.15:
+if dtIns > tIns * 1.15:
     dtIns = (tIns * 1.15)
     
 # Micro step delay array to determine movement speed 
@@ -166,8 +166,9 @@ while config["start"] == True:
                     time.sleep(0.001)
                     pI = getPres()
                 
-                """ this crashes if len(plc) < 2, but is very unlikely to happen"""
-                kPC = getkP(pIc[len(pIc)-2], pIc[len(pIc)-1])                                
+                """ len(pIc) must be > 2 """
+                if len(pIc)>2:
+                    kPC = getkP(pIc[len(pIc)-2], pIc[len(pIc)-1])                                
                 
                 # calc new function for speed of movement
                 ####
