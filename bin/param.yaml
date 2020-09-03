@@ -1,11 +1,11 @@
 C: 1.25
-Texp: 6.0
+Texp: 9.0
 TiSF: 1.15
-Tins: 4.0
-VAZ: 0.35
+Tins: 6.0
+VAZ: 0.6
 VolStat: 100
-bFrq: 6.0
-mPAT: 60.0
-pCrt: 2000.0
-tmps: 2020-09-01 18:46:21
+bFrq: 4.0
+mPAT: 95.0
+pCrt: 2300.0
+tmps: 2020-09-03 13:17:21
 vRst: 0.1

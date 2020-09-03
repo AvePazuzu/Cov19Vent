@@ -1,13 +1,13 @@
-McS: 1100
-Texp: 6.0
-Tins: 4.0
-VAZ: 0.35
-bFrq: 6.0
+McS: 1900
+Texp: 9.0
+Tins: 6.0
+VAZ: 0.6
+bFrq: 4.0
 c: 1.25
 calibrate: true
-optSet: true
-pCrt: 2000.0
+optSet: false
+pCrt: 2300.0
 pres: 9
 proc: false
-session: 2020-09-01 18:46:21
-start: true
+session: 2020-09-03 13:17:21
+start: false

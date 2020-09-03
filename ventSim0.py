@@ -66,15 +66,15 @@ c = config["c"]
 # =============================================================================
 # Connect to database
 # =============================================================================
-try:
-    client = pymongo.MongoClient()
-    # Initiate database
-    db = client.cov19Vent
-    # Set collection for the sesstion with the session ID
-    col = db.sID
-except:
-    print("Connecting to database failed.")
-
+# try:
+#     client = pymongo.MongoClient()
+#     # Initiate database
+#     db = client.cov19Vent
+#     # Set collection for the sesstion with the session ID
+#     col = db.sID
+# except:
+#     #print("Connecting to database failed.")
+#     pass
 # =============================================================================
 # Function definition
 # =============================================================================
@@ -103,15 +103,15 @@ def getkC(vAZ, pImax, pEavr):
     return kC
 
 # based on correction factor inspiration time is determined by
-dtIns = round(tIns + tIns*(kPC**-1 - 1), 4)
+# dtIns = round(tIns + tIns*(kPC**-1 - 1), 4)
 
-# the correction of inspiration time shell not be greater than 1.15
-if dtIns > tIns * 1.15:
-    dtIns = (tIns * 1.15)
+# # the correction of inspiration time shell not be greater than 1.15
+# if dtIns > tIns * 1.15:
+#     dtIns = (tIns * 1.15)
     
 # Micro step delay array to determine movement speed 
-slpIn = ins_flow() # delays for inspiration
-slpEx = exp_flow() # delays for expiration
+slpIn = ins_flow(tIns, vAZ, tStp, kPC) # delays for inspiration
+slpEx = exp_flow(tExp, vAZ, tStp) # delays for expiration
 
 # Factor to account for computational time; is substracted from delay
 cT = 0.00029
@@ -162,10 +162,10 @@ while config["start"] == True:
     
     # start inspiration
     n+=1
-    print("Breath Cycle: ", n)   
+    # print("Breath Cycle: ", n)   
     # Elapsed time during last cycle
     tI0 = time.time()
-    print("Inspiration...")
+    # print("Inspiration...")
     
     # micro step count inspiration
     msI = 0
@@ -191,9 +191,8 @@ while config["start"] == True:
                     kPC = getkP(pIc[len(pIc)-2], pIc[len(pIc)-1])                                
                 
                 # calc new function for speed of movement
-                ####
-                ####
-                
+                slpIn = ins_flow(tIns, vAZ, tStp, kPC)
+                                
             # Get values to push to database
             rec = {"timestamp": tI,
                    "vent_cycle": n,
@@ -228,7 +227,7 @@ while config["start"] == True:
     # GPIO.output(DIR, GPIO.HIGH)
    
     # start expiration
-    print("Expiration...")
+    # print("Expiration...")
     tE0 = time.time()
     # micro step count expriration
     msE = 0
@@ -250,7 +249,7 @@ while config["start"] == True:
     tE1 = time.time()    
     dtE = tE1-tE0
 
-    print("Ext Time of last cycle: ", dtE)
+    # print("Ext Time of last cycle: ", dtE)
         
     # calculate complience correction factor
     # kPC = getkC(vAZ, max(pIc), sum(pEc)/len(pEc))

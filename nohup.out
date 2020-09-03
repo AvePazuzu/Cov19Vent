@@ -2317,3 +2317,11 @@ Traceback (most recent call last):
   File "./ventSim0.py", line 93, in <module>
     slpIn = ins_flow() # delays for inspiration
 TypeError: ins_flow() missing 3 required positional arguments: 'dtIns', 'vAZ', and 'tStp'
+First print this!
+division by zero
+Print this by the end
+Ins Time of last cycle:  5.976404666900635
+Ins Time of last cycle:  5.96607232093811
+Ins Time of last cycle:  5.994555950164795
+Ins Time of last cycle:  5.986175060272217
+Ins Time of last cycle:  5.974488258361816

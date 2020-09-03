@@ -17,8 +17,15 @@ import numpy as np
 import math
 
 # Delay array for liniear inpiration flow
-def ins_flow(dtIns, vAZ, tStp):
+def ins_flow(tIns, vAZ, tStp, kPC):
    
+    # Calculate inspiration time based on kPC
+    dtIns = round(tIns + tIns*(kPC**-1 - 1), 4)
+    
+    # Set dtIns to a max of 1.15*tIns if necessary
+    if dtIns > tIns * 1.15:
+        dtIns = (tIns * 1.15)
+    
     vps = (vAZ)/tStp # supplied volume per micro step
     vsr = np.arange(0, vAZ+vps, vps) # volume stesp array
     
@@ -43,15 +50,7 @@ def ins_flow(dtIns, vAZ, tStp):
     return tdIns
 
 # Delay array for linear expriartion flow
-def exp_flow():
-    
-    # load config and params
-    with open('./bin/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    
-    vAZ = config["VAZ"] # maximum volume supplied [l]
-    tExp = config["Texp"] # insperation time [s]
-    tStp = config["McS"] # Micro steps for total volume
+def exp_flow(tExp, vAZ, tStp):
     
     vps = (vAZ)/tStp # supplied volume per micro step
     vsr = np.arange(0, vAZ+vps, vps) # volume stesp array
@@ -76,23 +75,3 @@ def exp_flow():
             tdExp.append(td) 
     return tdExp
     
-    
-# delays1 = exp_flow()
-# sum(delays1)
-# delays2= ins_flow()
-
-# # Test run for microstep activation
-# tI0 = time.time()
-# for i in range(tStp): 
-
-#     time.sleep(tdIns[i]-0.00018)
-# tI1 = time.time()
-# dtI = tI1-tI0; print(dtI)
-
-
-
-# def exp_flow(vol, tIns):
-#     delay = []
-#     return delay
-
-# tExp = config["Texp"] # expiration time [s]
