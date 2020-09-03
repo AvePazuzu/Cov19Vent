@@ -20,24 +20,16 @@ from math import pow
 from flow import ins_flow, exp_flow
 # import RPi.GPIO as GPIO
 
-
 # =============================================================================
 # Set logging config
 # =============================================================================
+
 # Set logging session ID
 logID = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 # Set basic configuration for logging
 logging.basicConfig(filename='errlog/'+logID+'.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s:%(message)s',
                     datefmt='%d-%m-%Y %I:%M:%S')
 
-print("First print this!")
-try:
-    2/0
-except Exception as ee:
-    print(ee)
-    logging.error(str(ee) + ": Something Failed")
-        
-print("Print this by the end")
 # =============================================================================
 # Setup process and configurations
 # =============================================================================
@@ -61,7 +53,6 @@ tExp = config["Texp"]
 tStp = config["McS"]
 sID = config["session"]
 c = config["c"]
-
 
 # =============================================================================
 # Connect to database
@@ -119,6 +110,7 @@ cT = 0.00029
 # =============================================================================
 # Set up GPIO
 # =============================================================================
+
 """
 # GPIO setup
 GPIO.setmode(GPIO.BOARD)
