@@ -7,8 +7,27 @@ Created on Wed May  6 17:12:19 2020
 """
 import ctl
 import subprocess
+import yaml
+import logging
+import datetime
+
+# =============================================================================
+# Set up logging for software usage errors
+# =============================================================================
+
+# Set logging session ID
+logID = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+# Set basic configuration for logging
+logging.basicConfig(filename='errlog/cont/'+logID+'.log', level=logging.DEBUG, 
+                    format='%(asctime)s %(levelname)s:%(message)s', datefmt='%d-%m-%Y %I:%M:%S')
 
 print("\nProgram started...")
+
+with open('./bin/config.yaml', "r") as f:
+    config = yaml.safe_load(f)
+
+# Database service will be started after setting parameters if required    
+print("\nDB active: "+ str(config["db_active"]))    
 
 cc = ("\nControl commands:\n"
       "--> 'set' to set the parameters\n"
@@ -16,8 +35,9 @@ cc = ("\nControl commands:\n"
       "--> 'stop' to stop the divice\n"
       "--> 'stats' to view config\n"
       "--> 'mon' to to start session monitor\n"
-      "--> 'db' to to start mongodb service\n"
+      "--> 'db' to toggle mongodb service\n"
       "--> 'e' to exit\n")
+
 print(cc)
 
 while True:
@@ -30,15 +50,26 @@ while True:
     
     elif input1 == 'help':
         print(cc)
+        logID = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        # Set basic configuration for logging
+        logging.basicConfig(filename='errlog/'+logID+'.log', level=logging.DEBUG, 
+                    format='%(asctime)s %(levelname)s:%(message)s', datefmt='%d-%m-%Y %I:%M:%S')
 
     elif input1 == 'mon':
-        subprocess.run(['gnome-terminal', '--', './mon.py'])
+        try:
+            subprocess.run(['gnome-terminal', '--', './mon.py'])
+        except Exception as e:
+            logging.error(e)
+            print("Starting monitor failed.")
         # on raspbian the following works:
         # os.system('lxterminal -e ./mon.py &')    
     elif input1 == 'db':
-        subprocess.run(['gnome-terminal', '--',"mongod", "--dbpath", "/home/eugen/develop/python/Cov19Vent/data/db2"])        
-        # on raspbian the following works:
-        # os.system('lxterminal -e ./mon.py &')    
+        if config["db_active"] == False:
+            config["db_active"] = True
+            print("\nDB active: "+ str(config["db_active"]))
+        else:
+            config["db_active"] = False
+            print("\nDB active: "+ str(config["db_active"]))
        
     elif input1 == 'start':
         ctl.start()     

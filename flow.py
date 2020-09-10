@@ -12,7 +12,6 @@ Based on the total air volume to be supplied and the initial inspiration
 and expiration time the functions retrun an arreay with micro step delays in [s]. 
 """
 
-import yaml
 import numpy as np
 import math
 

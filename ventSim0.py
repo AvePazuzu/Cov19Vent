@@ -21,14 +21,14 @@ from flow import ins_flow, exp_flow
 # import RPi.GPIO as GPIO
 
 # =============================================================================
-# Set logging config
+# Set up logging for ventilation process errors
 # =============================================================================
 
 # Set logging session ID
 logID = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 # Set basic configuration for logging
-logging.basicConfig(filename='errlog/'+logID+'.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s:%(message)s',
-                    datefmt='%d-%m-%Y %I:%M:%S')
+logging.basicConfig(filename='errlog/vent/'+logID+'.log', level=logging.DEBUG, 
+                    format='%(asctime)s %(levelname)s:%(message)s', datefmt='%d-%m-%Y %I:%M:%S')
 
 # =============================================================================
 # Setup process and configurations
@@ -93,13 +93,6 @@ def getkC(vAZ, pImax, pEavr):
         kC = cB_1/c
     return kC
 
-# based on correction factor inspiration time is determined by
-# dtIns = round(tIns + tIns*(kPC**-1 - 1), 4)
-
-# # the correction of inspiration time shell not be greater than 1.15
-# if dtIns > tIns * 1.15:
-#     dtIns = (tIns * 1.15)
-    
 # Micro step delay array to determine movement speed 
 slpIn = ins_flow(tIns, vAZ, tStp, kPC) # delays for inspiration
 slpEx = exp_flow(tExp, vAZ, tStp) # delays for expiration
@@ -198,7 +191,7 @@ while config["start"] == True:
             # except:
             #     print("Pushing record to database failed.")
             
-           # pushToDB(col, config["session"], rec)
+            # pushToDB(col, config["session"], rec)
                                            
         """ Each micro stepp takes ca. 0.0003s of calculation, 
             this time needs to be substracted from the sleeping time 

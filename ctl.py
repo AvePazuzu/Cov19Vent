@@ -16,6 +16,7 @@ import datetime as dt
 import pymongo
 import os
 import math
+import logging
 # from time import sleep
 # import RPi.GPIO as GPIO
                
@@ -337,6 +338,15 @@ def setParam():
         
     print("\nOptions set.\n")    
 
+    try:
+        if config["db_active"] == True:
+            startDB()
+            # on raspbian the following works:
+            # os.system('lxterminal -e ./mon.py &')
+            print("DB service started")
+    except Exception as e:        
+        print("Starting DB service failed!")
+        
     # Device calibration
     # calibrate() 
     
