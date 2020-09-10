@@ -7,3 +7,4 @@ mathi.py
 pymongo_test.py
 
 errlog/vent/*.log
+errlog/cont/*.log
